@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "MCP server for Context7",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "build": "tsc && chmod 755 dist/index.js",
     "format": "prettier --write .",
     "lint": "eslint \"**/*.{js,ts,tsx}\" --fix"
@@ -39,6 +40,7 @@
     "eslint-plugin-prettier": "^5.2.5",
     "prettier": "^3.5.3",
     "typescript": "^5.8.2",
-    "typescript-eslint": "^8.28.0"
+    "typescript-eslint": "^8.28.0",
+    "vitest": "^1.4.0"
   }
 }
