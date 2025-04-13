@@ -84,9 +84,17 @@ export function rerankProjects(projects: Project[], searchTerm: string): Project
       },
     });
 
+    // Check for exact docsRepoUrl match (highest priority)
+    let finalAScore = aScore;
+    let finalBScore = bScore;
+    if (a.settings.docsRepoUrl === searchTerm || a.settings.docsRepoUrl === `https://${searchTerm}`)
+      finalAScore += 200;
+    if (b.settings.docsRepoUrl === searchTerm || b.settings.docsRepoUrl === `https://${searchTerm}`)
+      finalBScore += 200;
+
     // Higher score first
-    if (aScore !== bScore) {
-      return bScore - aScore;
+    if (finalAScore !== finalBScore) {
+      return finalBScore - finalAScore;
     }
 
     // Default to alphabetical by project name

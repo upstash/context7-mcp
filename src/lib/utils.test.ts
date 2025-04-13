@@ -104,4 +104,16 @@ describe("rerankProjects", () => {
     const result = rerankProjects(mockProjects, "next.js");
     expect(result[0].settings.project).toBe("vercel/nextjs");
   });
+
+  it("should handle exact docsRepoUrl matches", () => {
+    const result = rerankProjects(mockProjects, "https://github.com/tanstack/query");
+    expect(result[0].settings.project).toBe("tanstack/query");
+    expect(result[0].settings.docsRepoUrl).toBe("https://github.com/tanstack/query");
+  });
+
+  it("should handle docsRepoUrl matches without https:// prefix", () => {
+    const result = rerankProjects(mockProjects, "github.com/tanstack/query");
+    expect(result[0].settings.project).toBe("tanstack/query");
+    expect(result[0].settings.docsRepoUrl).toBe("https://github.com/tanstack/query");
+  });
 });
