@@ -47,12 +47,32 @@ Go to: `Settings` -> `Cursor Settings` -> `MCP` -> `Add new global MCP server`
 
 Paste this into your Cursor `~/.cursor/mcp.json` file. See [Cursor MCP docs](https://docs.cursor.com/context/model-context-protocol) for more info.
 
+#### MacOs
+
 ```json
 {
   "mcpServers": {
     "context7": {
       "command": "npx",
       "args": ["-y", "@upstash/context7-mcp@latest"]
+    }
+  }
+}
+```
+
+#### Windows
+
+```json
+{
+  "mcpServers": {
+    "context7": {
+      "command": "C:\\Windows\\System32\\cmd.exe",
+      "args": [
+        "/c",
+        "npx",
+        "-y",
+        "@upstash/context7-mcp@latest"
+      ]
     }
   }
 }
@@ -62,6 +82,8 @@ Paste this into your Cursor `~/.cursor/mcp.json` file. See [Cursor MCP docs](htt
 
 Add this to your Windsurf MCP config file. See [Windsurf MCP docs](https://docs.windsurf.com/windsurf/mcp) for more info.
 
+#### MacOs
+
 ```json
 {
   "mcpServers": {
@@ -73,9 +95,29 @@ Add this to your Windsurf MCP config file. See [Windsurf MCP docs](https://docs.
 }
 ```
 
+#### Windows
+
+```json
+{
+  "mcpServers": {
+    "context7": {
+      "command": "C:\\Windows\\System32\\cmd.exe",
+      "args": [
+        "/c",
+        "npx",
+        "-y",
+        "@upstash/context7-mcp@latest"
+      ]
+    }
+  }
+}
+```
+
 ### Install in VSCode
 
 Add this to your VSCode MCP config file. See [VSCode MCP docs](https://code.visualstudio.com/docs/copilot/chat/mcp-servers) for more info.
+
+#### MacOs
 
 ```json
 {
@@ -84,6 +126,25 @@ Add this to your VSCode MCP config file. See [VSCode MCP docs](https://code.visu
       "type": "stdio",
       "command": "npx",
       "args": ["-y", "@upstash/context7-mcp@latest"]
+    }
+  }
+}
+```
+
+#### Windows
+
+```json
+{
+  "servers": {
+    "context7": {
+       "type": "stdio",
+      "command": "C:\\Windows\\System32\\cmd.exe",
+      "args": [
+        "/c",
+        "npx",
+        "-y",
+        "@upstash/context7-mcp@latest"
+      ]
     }
   }
 }
