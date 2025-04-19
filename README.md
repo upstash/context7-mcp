@@ -26,7 +26,7 @@ How do I invalidate a query in React Query? use context7
 How do I protect a route with NextAuth? use context7
 ```
 
-Context7 fetches up-to-date documentation and working code examples right into your LLM’s context.
+Context7 fetches up-to-date documentation and working code examples right into your LLM's context.
 
 - 1️⃣ Ask your question naturally
 - 2️⃣ Tell the LLM to `use context7`
@@ -45,7 +45,23 @@ No tab-switching, no hallucinated APIs that don't exist, no outdated code genera
 
 Go to: `Settings` -> `Cursor Settings` -> `MCP` -> `Add new global MCP server`
 
+Using `deno` is recommended for enhanced security, as it allows explicit control over script permissions (like network access) via flags like `--allow-net`, reducing potential risks compared to runtimes with broader default permissions. See [#7](https://github.com/upstash/context7-mcp/issues/7) for discussion.
+
 Paste this into your Cursor `~/.cursor/mcp.json` file. See [Cursor MCP docs](https://docs.cursor.com/context/model-context-protocol) for more info.
+
+```json
+{
+  "mcpServers": {
+    "context7": {
+      "command": "deno",
+      "args": ["run", "--allow-net", "npm:@upstash/context7-mcp"]
+    }
+  }
+}
+```
+
+<details>
+<summary>Alternative: Use npx</summary>
 
 ```json
 {
@@ -57,6 +73,8 @@ Paste this into your Cursor `~/.cursor/mcp.json` file. See [Cursor MCP docs](htt
   }
 }
 ```
+
+</details>
 
 ### Install in Windsurf
 
@@ -66,6 +84,20 @@ Add this to your Windsurf MCP config file. See [Windsurf MCP docs](https://docs.
 {
   "mcpServers": {
     "context7": {
+      "command": "deno",
+      "args": ["run", "--allow-net", "npm:@upstash/context7-mcp"]
+    }
+  }
+}
+```
+
+<details>
+<summary>Alternative: Use npx</summary>
+
+```json
+{
+  "mcpServers": {
+    "context7": {
       "command": "npx",
       "args": ["-y", "@upstash/context7-mcp@latest"]
     }
@@ -73,9 +105,26 @@ Add this to your Windsurf MCP config file. See [Windsurf MCP docs](https://docs.
 }
 ```
 
+</details>
+
 ### Install in VSCode
 
 Add this to your VSCode MCP config file. See [VSCode MCP docs](https://code.visualstudio.com/docs/copilot/chat/mcp-servers) for more info.
+
+```json
+{
+  "servers": {
+    "Context7": {
+      "type": "stdio",
+      "command": "deno",
+      "args": ["run", "--allow-net", "npm:@upstash/context7-mcp"]
+    }
+  }
+}
+```
+
+<details>
+<summary>Alternative: Use npx</summary>
 
 ```json
 {
@@ -88,6 +137,8 @@ Add this to your VSCode MCP config file. See [VSCode MCP docs](https://code.visu
   }
 }
 ```
+
+</details>
 
 ### Available Tools
 
