@@ -89,6 +89,29 @@ Add this to your VSCode MCP config file. See [VSCode MCP docs](https://code.visu
 }
 ```
 
+### Install in Claude Code
+
+Run this command. See [Claude Code MCP docs](https://docs.anthropic.com/en/docs/agents-and-tools/claude-code/tutorials#set-up-model-context-protocol-mcp) for more info.
+
+```sh
+claude mcp add context7 -- npx -y @upstash/context7-mcp@latest
+```
+
+### Install in Claude Desktop
+
+Add this to your Claude Desktop `claude_desktop_config.json` file. See [Claude Desktop MCP docs](https://modelcontextprotocol.io/quickstart/user) for more info.
+
+```json
+{
+  "mcpServers": {
+    "Context7": {
+      "command": "npx",
+      "args": ["-y", "@upstash/context7-mcp@latest"]
+    }
+  }
+}
+```
+
 ### Available Tools
 
 - `resolve-library-id`: Resolves a general library name into a Context7-compatible library ID.
