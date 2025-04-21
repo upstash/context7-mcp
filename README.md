@@ -59,7 +59,7 @@ Pasting the following configuration into your Cursor `~/.cursor/mcp.json` file i
 ```json
 {
   "mcpServers": {
-    "context7": {
+    "context_7": {
       "command": "npx",
       "args": ["-y", "@upstash/context7-mcp@latest"]
     }
@@ -73,7 +73,7 @@ Pasting the following configuration into your Cursor `~/.cursor/mcp.json` file i
 ```json
 {
   "mcpServers": {
-    "context7": {
+    "context_7": {
       "command": "bunx",
       "args": ["-y", "@upstash/context7-mcp@latest"]
     }
@@ -89,7 +89,7 @@ Pasting the following configuration into your Cursor `~/.cursor/mcp.json` file i
 ```json
 {
   "mcpServers": {
-    "context7": {
+    "context_7": {
       "command": "deno",
       "args": ["run", "--allow-net", "npm:@upstash/context7-mcp"]
     }
