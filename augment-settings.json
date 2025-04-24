@@ -1,0 +1,83 @@
+{
+    "terminal.integrated.fontFamily": "FiraCode Nerd Font",
+    "terminal.integrated.fontSize": 12,
+    "terminal.integrated.defaultProfile.osx": "zsh",
+    "terminal.integrated.profiles.osx": {
+        "zsh": {
+            "path": "/bin/zsh",
+            "args": ["-l"]
+        },
+        "pwsh": {
+            "path": "/usr/local/microsoft/powershell/7/pwsh",
+            "args": ["-l"]
+        }
+    },
+    "terminal.integrated.env.osx": {
+        "TERM_PROGRAM": "vscode"
+    },
+    "terminal.integrated.gpuAcceleration": "on",
+    "terminal.integrated.cursorBlinking": true,
+    "terminal.integrated.cursorStyle": "line",
+    "terminal.integrated.copyOnSelection": true,
+    "editor.fontFamily": "'FiraCode Nerd Font', Menlo, Monaco, 'Courier New', monospace",
+    "editor.fontSize": 12,
+    "terminal.integrated.fontWeight": "normal",
+    "terminal.integrated.fontWeightBold": "bold",
+    "workbench.colorCustomizations": {
+        "terminal.background": "#1a1b26",
+        "terminal.foreground": "#c0caf5",
+        "terminal.ansiBlack": "#15161e",
+        "terminal.ansiRed": "#f7768e",
+        "terminal.ansiGreen": "#9ece6a",
+        "terminal.ansiYellow": "#e0af68",
+        "terminal.ansiBlue": "#7aa2f7",
+        "terminal.ansiMagenta": "#bb9af7",
+        "terminal.ansiCyan": "#7dcfff",
+        "terminal.ansiWhite": "#a9b1d6",
+        "terminal.ansiBrightBlack": "#414868",
+        "terminal.ansiBrightRed": "#f7768e",
+        "terminal.ansiBrightGreen": "#9ece6a",
+        "terminal.ansiBrightYellow": "#e0af68",
+        "terminal.ansiBrightBlue": "#7aa2f7",
+        "terminal.ansiBrightMagenta": "#bb9af7",
+        "terminal.ansiBrightCyan": "#7dcfff",
+        "terminal.ansiBrightWhite": "#c0caf5"
+    },
+    "github.copilot.enable": {
+        "*": false
+    },
+    "git.enableSmartCommit": true,
+    "accessibility.signals.terminalBell": {
+        "sound": "off"
+    },
+    "terminal.integrated.enableVisualBell": false,
+    "augment.chat.userGuidelines": "Hablemos siempre en idioma español.",
+    "security.workspace.trust.untrustedFiles": "open",
+    "augment.advanced": {
+        "mcpServers": [
+            {
+                "name": "context7",
+                "command": "npx",
+                "args": ["-y", "@upstash/context7-mcp@latest"]
+            },
+            {
+                "name": "puppeteer",
+                "command": "npx",
+                "args": ["-y", "@modelcontextprotocol/server-puppeteer"]
+            },
+            {
+                "name": "sequential-thinking",
+                "command": "npx",
+                "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"]
+            },
+            {
+                "name": "github",
+                "command": "npx",
+                "args": ["-y", "@modelcontextprotocol/server-github"],
+                "env": {
+                    "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_TOKEN}"
+                }
+            }
+        ]
+    }
+}

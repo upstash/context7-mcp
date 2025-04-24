@@ -1,0 +1,12 @@
+{
+  "name": "mcp-test",
+  "version": "1.0.0",
+  "description": "Test script for MCP servers",
+  "main": "test-mcp.js",
+  "type": "module",
+  "scripts": {
+    "test": "node test-mcp.js"
+  },
+  "author": "",
+  "license": "ISC"
+}

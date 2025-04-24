@@ -173,3 +173,13 @@ dist
 
 # Finder (MacOS) folder config
 .DS_Store
+
+# MCP configuration files with credentials
+**/mcp.json
+**/claude_desktop_config.json
+**/Library/Application Support/
+~/Library/
+.env
+*.env
+claude_desktop_config_local.json
+mcp_local.json
