@@ -1,0 +1,821 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Model Context Protocol (MCP) - La revolución en IA</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/styles.css">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="img/favicon.svg">
+  </head>
+  <body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+      <div class="container">
+        <a class="navbar-brand" href="#">MCP</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="#que-es-mcp">¿Qué es MCP?</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#servidores">Servidores MCP</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#prueba-local">Prueba Local</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#demo">Demostración</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#contacto">Contacto</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="hero" class="py-5 mt-5">
+      <div class="container">
+        <div class="row align-items-center">
+          <div class="col-lg-6 mb-4 mb-lg-0">
+            <h1 class="display-4 fw-bold mb-4">Model Context Protocol</h1>
+            <p class="lead mb-4">Potencia tus modelos de IA con herramientas y datos del mundo real. MCP es el protocolo estándar que conecta modelos de lenguaje con herramientas externas, permitiendo a la IA interactuar con sistemas y datos en tiempo real.</p>
+            <div class="d-flex flex-wrap gap-2">
+              <a href="#servidores" class="btn btn-light btn-lg">Explorar Servidores</a>
+              <a href="#prueba-local" class="btn btn-outline-light btn-lg">Probar Localmente</a>
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="card shadow-lg border-0">
+              <div class="card-body p-4">
+                <div class="code-block">
+                  <pre><code>// Conectando un modelo de IA con herramientas externas
+const mcpClient = new McpClient();
+await mcpClient.connect(transport);
+
+// Listar herramientas disponibles
+const tools = await mcpClient.listTools();
+
+// Ejecutar una herramienta
+const result = await mcpClient.callTool(
+  "calculator",
+  { operation: "add", a: 5, b: 3 }
+);</code></pre>
+                </div>
+                <p class="text-center mb-0 mt-3"><i class="fas fa-bolt text-warning"></i> Potencia tus modelos de IA con acceso a datos y herramientas en tiempo real</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ¿Qué es MCP? Section -->
+    <section id="que-es-mcp" class="py-5 bg-light">
+      <div class="container">
+        <div class="row justify-content-center mb-5">
+          <div class="col-lg-8 text-center">
+            <h2 class="display-5 fw-bold mb-4">¿Qué es Model Context Protocol?</h2>
+            <p class="lead">MCP es un protocolo estándar que permite a los modelos de lenguaje (LLMs) interactuar con herramientas y datos externos en tiempo real.</p>
+          </div>
+        </div>
+
+        <div class="row g-4">
+          <div class="col-md-6 col-lg-3">
+            <div class="card h-100 border-0 shadow-sm">
+              <div class="card-body text-center p-4">
+                <div class="rounded-circle bg-primary bg-opacity-10 p-3 d-inline-flex mb-3">
+                  <i class="fas fa-plug fa-2x text-primary"></i>
+                </div>
+                <h5 class="card-title">Conectividad</h5>
+                <p class="card-text">Conecta modelos de IA con herramientas, APIs y sistemas externos de forma estandarizada.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-6 col-lg-3">
+            <div class="card h-100 border-0 shadow-sm">
+              <div class="card-body text-center p-4">
+                <div class="rounded-circle bg-success bg-opacity-10 p-3 d-inline-flex mb-3">
+                  <i class="fas fa-tools fa-2x text-success"></i>
+                </div>
+                <h5 class="card-title">Herramientas</h5>
+                <p class="card-text">Permite a los modelos de IA utilizar herramientas como calculadoras, navegadores web, bases de datos y más.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-6 col-lg-3">
+            <div class="card h-100 border-0 shadow-sm">
+              <div class="card-body text-center p-4">
+                <div class="rounded-circle bg-info bg-opacity-10 p-3 d-inline-flex mb-3">
+                  <i class="fas fa-database fa-2x text-info"></i>
+                </div>
+                <h5 class="card-title">Datos en tiempo real</h5>
+                <p class="card-text">Accede a información actualizada y recursos externos para mejorar las respuestas de los modelos.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-6 col-lg-3">
+            <div class="card h-100 border-0 shadow-sm">
+              <div class="card-body text-center p-4">
+                <div class="rounded-circle bg-warning bg-opacity-10 p-3 d-inline-flex mb-3">
+                  <i class="fas fa-shield-alt fa-2x text-warning"></i>
+                </div>
+                <h5 class="card-title">Estándar abierto</h5>
+                <p class="card-text">Protocolo de código abierto que facilita la interoperabilidad entre diferentes modelos y herramientas.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row mt-5">
+          <div class="col-lg-6 mb-4 mb-lg-0">
+            <h3 class="mb-4">¿Cómo funciona MCP?</h3>
+            <p>MCP establece un protocolo de comunicación bidireccional entre modelos de IA y servidores de herramientas. El flujo básico es:</p>
+            <ol class="list-group list-group-numbered mb-4">
+              <li class="list-group-item">El cliente MCP se conecta a un servidor MCP</li>
+              <li class="list-group-item">El modelo de IA solicita información sobre las herramientas disponibles</li>
+              <li class="list-group-item">El modelo decide qué herramienta utilizar y envía una solicitud</li>
+              <li class="list-group-item">El servidor MCP ejecuta la herramienta y devuelve los resultados</li>
+              <li class="list-group-item">El modelo incorpora los resultados en su respuesta final</li>
+            </ol>
+          </div>
+          <div class="col-lg-6">
+            <div class="card border-0 shadow-sm">
+              <div class="card-body">
+                <h3 class="mb-4">Beneficios de MCP</h3>
+                <div class="d-flex mb-3">
+                  <div class="flex-shrink-0">
+                    <i class="fas fa-check-circle text-success me-2"></i>
+                  </div>
+                  <div>
+                    <h5 class="mb-1">Respuestas más precisas</h5>
+                    <p class="mb-0">Acceso a datos actualizados y herramientas especializadas</p>
+                  </div>
+                </div>
+                <div class="d-flex mb-3">
+                  <div class="flex-shrink-0">
+                    <i class="fas fa-check-circle text-success me-2"></i>
+                  </div>
+                  <div>
+                    <h5 class="mb-1">Capacidades extendidas</h5>
+                    <p class="mb-0">Los modelos pueden realizar acciones en el mundo real</p>
+                  </div>
+                </div>
+                <div class="d-flex mb-3">
+                  <div class="flex-shrink-0">
+                    <i class="fas fa-check-circle text-success me-2"></i>
+                  </div>
+                  <div>
+                    <h5 class="mb-1">Arquitectura modular</h5>
+                    <p class="mb-0">Fácil integración de nuevas herramientas y capacidades</p>
+                  </div>
+                </div>
+                <div class="d-flex">
+                  <div class="flex-shrink-0">
+                    <i class="fas fa-check-circle text-success me-2"></i>
+                  </div>
+                  <div>
+                    <h5 class="mb-1">Interoperabilidad</h5>
+                    <p class="mb-0">Funciona con diferentes modelos de IA y plataformas</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Servidores MCP Section -->
+    <section id="servidores" class="py-5">
+      <div class="container">
+        <div class="row justify-content-center mb-5">
+          <div class="col-lg-8 text-center">
+            <h2 class="display-5 fw-bold mb-4">Principales Servidores MCP</h2>
+            <p class="lead">Explora los servidores MCP más populares que extienden las capacidades de los modelos de IA con herramientas especializadas.</p>
+          </div>
+        </div>
+
+        <div class="row g-4">
+          <!-- Context7 -->
+          <div class="col-md-6 col-lg-3">
+            <div class="card server-card h-100">
+              <div class="card-header text-center py-3">
+                <h5 class="mb-0">Context7</h5>
+              </div>
+              <div class="card-body text-center">
+                <div class="server-icon">
+                  <i class="fas fa-book"></i>
+                </div>
+                <h6 class="card-subtitle mb-2 text-muted">Documentación actualizada</h6>
+                <p class="card-text">Proporciona documentación actualizada y ejemplos de código para bibliotecas y frameworks.</p>
+                <p class="small text-muted mb-3">Ideal para desarrollo de software</p>
+                <a href="#demo" class="btn btn-outline-primary" onclick="runMcpServer('Context7')">Probar Context7</a>
+              </div>
+              <div class="card-footer bg-transparent">
+                <div class="d-flex justify-content-between align-items-center">
+                  <span class="badge bg-success">Estable</span>
+                  <a href="https://github.com/upstash/context7-mcp" target="_blank" class="text-muted"><i class="fab fa-github"></i> GitHub</a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Puppeteer -->
+          <div class="col-md-6 col-lg-3">
+            <div class="card server-card h-100">
+              <div class="card-header text-center py-3">
+                <h5 class="mb-0">Puppeteer</h5>
+              </div>
+              <div class="card-body text-center">
+                <div class="server-icon">
+                  <i class="fas fa-globe"></i>
+                </div>
+                <h6 class="card-subtitle mb-2 text-muted">Automatización web</h6>
+                <p class="card-text">Permite la automatización de navegadores web para realizar tareas como scraping o testing.</p>
+                <p class="small text-muted mb-3">Ideal para interacción con páginas web</p>
+                <a href="#demo" class="btn btn-outline-primary" onclick="runMcpServer('Puppeteer')">Probar Puppeteer</a>
+              </div>
+              <div class="card-footer bg-transparent">
+                <div class="d-flex justify-content-between align-items-center">
+                  <span class="badge bg-success">Estable</span>
+                  <a href="https://github.com/modelcontextprotocol/servers" target="_blank" class="text-muted"><i class="fab fa-github"></i> GitHub</a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Sequential Thinking -->
+          <div class="col-md-6 col-lg-3">
+            <div class="card server-card h-100">
+              <div class="card-header text-center py-3">
+                <h5 class="mb-0">Sequential Thinking</h5>
+              </div>
+              <div class="card-body text-center">
+                <div class="server-icon">
+                  <i class="fas fa-brain"></i>
+                </div>
+                <h6 class="card-subtitle mb-2 text-muted">Razonamiento paso a paso</h6>
+                <p class="card-text">Ayuda a los modelos de IA a resolver problemas complejos mediante un enfoque paso a paso.</p>
+                <p class="small text-muted mb-3">Ideal para resolución de problemas</p>
+                <a href="#demo" class="btn btn-outline-primary" onclick="runMcpServer('Sequential Thinking')">Probar Sequential</a>
+              </div>
+              <div class="card-footer bg-transparent">
+                <div class="d-flex justify-content-between align-items-center">
+                  <span class="badge bg-success">Estable</span>
+                  <a href="https://github.com/modelcontextprotocol/servers" target="_blank" class="text-muted"><i class="fab fa-github"></i> GitHub</a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- GitHub -->
+          <div class="col-md-6 col-lg-3">
+            <div class="card server-card h-100">
+              <div class="card-header text-center py-3">
+                <h5 class="mb-0">GitHub</h5>
+              </div>
+              <div class="card-body text-center">
+                <div class="server-icon">
+                  <i class="fab fa-github"></i>
+                </div>
+                <h6 class="card-subtitle mb-2 text-muted">Integración con GitHub</h6>
+                <p class="card-text">Proporciona acceso a la API de GitHub para interactuar con repositorios, issues, PRs, etc.</p>
+                <p class="small text-muted mb-3">Ideal para desarrollo colaborativo</p>
+                <a href="#demo" class="btn btn-outline-primary" onclick="runMcpServer('GitHub')">Probar GitHub</a>
+              </div>
+              <div class="card-footer bg-transparent">
+                <div class="d-flex justify-content-between align-items-center">
+                  <span class="badge bg-success">Estable</span>
+                  <a href="https://github.com/modelcontextprotocol/servers" target="_blank" class="text-muted"><i class="fab fa-github"></i> GitHub</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row mt-5">
+          <div class="col-12 text-center">
+            <p class="lead">Estos servidores MCP pueden ser utilizados con diferentes clientes y modelos de IA compatibles con el protocolo MCP.</p>
+            <a href="https://github.com/modelcontextprotocol/servers" target="_blank" class="btn btn-primary">Ver más servidores MCP <i class="fas fa-external-link-alt ms-2"></i></a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Prueba Local Section -->
+    <section id="prueba-local" class="py-5 bg-light">
+      <div class="container">
+        <div class="row justify-content-center mb-5">
+          <div class="col-lg-8 text-center">
+            <h2 class="display-5 fw-bold mb-4">Prueba MCP Localmente</h2>
+            <p class="lead">Configura y ejecuta servidores MCP en tu entorno local para potenciar tus modelos de IA.</p>
+          </div>
+        </div>
+
+        <div class="row align-items-center mb-5">
+          <div class="col-lg-6 mb-4 mb-lg-0">
+            <h3 class="mb-4">Requisitos previos</h3>
+            <ul class="list-group mb-4">
+              <li class="list-group-item d-flex align-items-center">
+                <i class="fab fa-node-js text-success me-3 fs-4"></i>
+                <div>
+                  <strong>Node.js</strong>
+                  <p class="mb-0 small">Versión 18.0.0 o superior</p>
+                </div>
+              </li>
+              <li class="list-group-item d-flex align-items-center">
+                <i class="fab fa-npm text-danger me-3 fs-4"></i>
+                <div>
+                  <strong>npm o yarn</strong>
+                  <p class="mb-0 small">Gestor de paquetes para instalar dependencias</p>
+                </div>
+              </li>
+              <li class="list-group-item d-flex align-items-center">
+                <i class="fab fa-python text-primary me-3 fs-4"></i>
+                <div>
+                  <strong>Python (opcional)</strong>
+                  <p class="mb-0 small">Para servidores MCP basados en Python</p>
+                </div>
+              </li>
+              <li class="list-group-item d-flex align-items-center">
+                <i class="fas fa-terminal text-dark me-3 fs-4"></i>
+                <div>
+                  <strong>Terminal o línea de comandos</strong>
+                  <p class="mb-0 small">Para ejecutar los comandos de instalación</p>
+                </div>
+              </li>
+            </ul>
+          </div>
+          <div class="col-lg-6">
+            <div class="card border-0 shadow-sm">
+              <div class="card-body">
+                <h3 class="mb-4">Instalación rápida</h3>
+                <p>Instala los servidores MCP globalmente con npm:</p>
+                <div class="code-block mb-3">
+                  <pre><code>npm install -g @upstash/context7-mcp @modelcontextprotocol/server-puppeteer @modelcontextprotocol/server-sequential-thinking @modelcontextprotocol/server-github</code></pre>
+                </div>
+                <p class="mb-0 small text-muted">Nota: Para el servidor GitHub, necesitarás configurar un token de acceso personal.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="card border-0 shadow-sm">
+              <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">Configuración para diferentes entornos</h4>
+              </div>
+              <div class="card-body">
+                <ul class="nav nav-tabs" id="configTabs" role="tablist">
+                  <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="vscode-tab" data-bs-toggle="tab" data-bs-target="#vscode" type="button" role="tab" aria-controls="vscode" aria-selected="true">VS Code</button>
+                  </li>
+                  <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="claude-tab" data-bs-toggle="tab" data-bs-target="#claude" type="button" role="tab" aria-controls="claude" aria-selected="false">Claude Desktop</button>
+                  </li>
+                  <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="cursor-tab" data-bs-toggle="tab" data-bs-target="#cursor" type="button" role="tab" aria-controls="cursor" aria-selected="false">Cursor</button>
+                  </li>
+                </ul>
+                <div class="tab-content p-3" id="configTabsContent">
+                  <div class="tab-pane fade show active" id="vscode" role="tabpanel" aria-labelledby="vscode-tab">
+                    <p>Para VS Code, crea o edita el archivo <code>mcp.json</code> en la carpeta de configuración de usuario:</p>
+                    <div class="code-block">
+                      <pre><code>{
+  "servers": {
+    "context7": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@upstash/context7-mcp@latest"]
+    },
+    "puppeteer": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-puppeteer"]
+    },
+    "sequential-thinking": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"]
+    },
+    "github": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_TOKEN}"
+      }
+    }
+  }
+}</code></pre>
+                    </div>
+                    <p class="mt-3 small text-muted">Ubicación en macOS: <code>~/Library/Application Support/Code/User/mcp.json</code></p>
+                    <p class="small text-muted">Ubicación en Windows: <code>%APPDATA%\Code\User\mcp.json</code></p>
+                  </div>
+                  <div class="tab-pane fade" id="claude" role="tabpanel" aria-labelledby="claude-tab">
+                    <p>Para Claude Desktop, crea o edita el archivo <code>claude_desktop_config.json</code>:</p>
+                    <div class="code-block">
+                      <pre><code>{
+  "mcpServers": {
+    "context7": {
+      "command": "npx",
+      "args": ["-y", "@upstash/context7-mcp@latest"]
+    },
+    "puppeteer": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-puppeteer"]
+    },
+    "sequential-thinking": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"]
+    },
+    "github": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_TOKEN}"
+      }
+    }
+  }
+}</code></pre>
+                    </div>
+                    <p class="mt-3 small text-muted">Ubicación en macOS: <code>/Users/[usuario]/Library/Application Support/Claude/claude_desktop_config.json</code></p>
+                    <p class="small text-muted">Ubicación en Windows: <code>%APPDATA%\Claude\claude_desktop_config.json</code></p>
+                  </div>
+                  <div class="tab-pane fade" id="cursor" role="tabpanel" aria-labelledby="cursor-tab">
+                    <p>Para Cursor, edita el archivo <code>mcp.json</code>:</p>
+                    <div class="code-block">
+                      <pre><code>{
+  "mcpServers": {
+    "context7": {
+      "command": "npx",
+      "args": ["-y", "@upstash/context7-mcp@latest"]
+    },
+    "puppeteer": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-puppeteer"]
+    },
+    "sequential-thinking": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"]
+    },
+    "github": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_TOKEN}"
+      }
+    }
+  }
+}</code></pre>
+                    </div>
+                    <p class="mt-3 small text-muted">Ubicación en macOS: <code>~/.cursor/mcp.json</code></p>
+                    <p class="small text-muted">Ubicación en Windows: <code>%USERPROFILE%\.cursor\mcp.json</code></p>
+                  </div>
+                </div>
+              </div>
+              <div class="card-footer bg-light">
+                <div class="alert alert-warning mb-0">
+                  <i class="fas fa-exclamation-triangle me-2"></i> <strong>Importante:</strong> Reemplaza <code>${GITHUB_TOKEN}</code> con tu token personal de GitHub o configúralo como variable de entorno en tu sistema.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Demo Section -->
+    <section id="demo" class="py-5">
+      <div class="container">
+        <div class="row justify-content-center mb-5">
+          <div class="col-lg-8 text-center">
+            <h2 class="display-5 fw-bold mb-4">Demostración Interactiva</h2>
+            <p class="lead">Prueba los diferentes servidores MCP y observa cómo funcionan en tiempo real.</p>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-lg-4 mb-4 mb-lg-0">
+            <div class="card border-0 shadow-sm h-100">
+              <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">Selecciona un servidor MCP</h4>
+              </div>
+              <div class="card-body">
+                <p>Haz clic en uno de los siguientes servidores para ver una simulación de su funcionamiento:</p>
+                <div class="d-grid gap-2">
+                  <button class="btn btn-outline-primary" onclick="runMcpServer('Context7')">
+                    <i class="fas fa-book me-2"></i> Context7
+                  </button>
+                  <button class="btn btn-outline-primary" onclick="runMcpServer('Puppeteer')">
+                    <i class="fas fa-globe me-2"></i> Puppeteer
+                  </button>
+                  <button class="btn btn-outline-primary" onclick="runMcpServer('Sequential Thinking')">
+                    <i class="fas fa-brain me-2"></i> Sequential Thinking
+                  </button>
+                  <button class="btn btn-outline-primary" onclick="runMcpServer('GitHub')">
+                    <i class="fab fa-github me-2"></i> GitHub
+                  </button>
+                </div>
+              </div>
+              <div class="card-footer bg-light">
+                <p class="small text-muted mb-0">Esta es una simulación. Para una experiencia completa, configura los servidores localmente.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-8">
+            <div class="card border-0 shadow-sm h-100">
+              <div class="card-header bg-dark text-white">
+                <div class="d-flex align-items-center">
+                  <h4 class="mb-0">Terminal</h4>
+                  <div class="ms-auto">
+                    <span class="badge bg-danger me-1">●</span>
+                    <span class="badge bg-warning me-1">●</span>
+                    <span class="badge bg-success">●</span>
+                  </div>
+                </div>
+              </div>
+              <div class="card-body bg-dark text-light p-4">
+                <div id="demo-output" class="terminal-output">
+                  <p class="mb-0 text-muted">// Selecciona un servidor MCP para ver su salida...</p>
+                </div>
+              </div>
+              <div class="card-footer bg-dark text-light border-top border-secondary">
+                <div class="d-flex align-items-center">
+                  <span class="text-success me-2">$</span>
+                  <span class="text-muted">Esperando comando...</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row mt-5">
+          <div class="col-12">
+            <div class="card border-0 shadow-sm">
+              <div class="card-header bg-info text-white">
+                <h4 class="mb-0">Ejemplo de uso en código</h4>
+              </div>
+              <div class="card-body">
+                <p>Así es como puedes utilizar MCP en tu código para conectar un modelo de IA con herramientas externas:</p>
+                <ul class="nav nav-tabs" id="codeTabs" role="tablist">
+                  <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="js-tab" data-bs-toggle="tab" data-bs-target="#js" type="button" role="tab" aria-controls="js" aria-selected="true">JavaScript</button>
+                  </li>
+                  <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="python-tab" data-bs-toggle="tab" data-bs-target="#python" type="button" role="tab" aria-controls="python" aria-selected="false">Python</button>
+                  </li>
+                </ul>
+                <div class="tab-content p-3" id="codeTabsContent">
+                  <div class="tab-pane fade show active" id="js" role="tabpanel" aria-labelledby="js-tab">
+                    <div class="code-block">
+                      <pre><code>import { Client } from "@modelcontextprotocol/sdk/client/index.js";
+import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
+import { Anthropic } from "@anthropic-ai/sdk";
+
+// Inicializar cliente MCP
+const transport = new StdioClientTransport({
+  command: "npx",
+  args: ["-y", "@upstash/context7-mcp@latest"],
+});
+
+const client = new Client(
+  { name: "mcp-client", version: "1.0.0" },
+  { capabilities: {} }
+);
+
+await client.connect(transport);
+
+// Inicializar cliente Anthropic
+const anthropic = new Anthropic({
+  apiKey: process.env.ANTHROPIC_API_KEY,
+});
+
+// Listar herramientas disponibles
+const toolsResponse = await client.request(
+  { method: "tools/list" },
+  ListToolsResultSchema
+);
+
+// Crear mensaje con Claude usando las herramientas
+const response = await anthropic.messages.create({
+  model: "claude-3-5-sonnet-20241022",
+  max_tokens: 1000,
+  messages: [{ role: "user", content: "Busca documentación sobre React hooks" }],
+  tools: toolsResponse.tools.map(tool => ({
+    name: tool.name,
+    description: tool.description,
+    input_schema: tool.inputSchema
+  }))
+});</code></pre>
+                    </div>
+                  </div>
+                  <div class="tab-pane fade" id="python" role="tabpanel" aria-labelledby="python-tab">
+                    <div class="code-block">
+                      <pre><code>import asyncio
+import os
+from mcp.client import ClientSession
+from mcp.client.stdio import stdio_client, StdioServerParameters
+from anthropic import Anthropic
+
+async def main():
+    # Inicializar cliente MCP
+    server_params = StdioServerParameters(
+        command="npx",
+        args=["-y", "@upstash/context7-mcp@latest"],
+        env=None
+    )
+
+    async with stdio_client(server_params) as (stdio, write):
+        async with ClientSession(stdio, write) as session:
+            await session.initialize()
+
+            # Inicializar cliente Anthropic
+            anthropic = Anthropic(api_key=os.environ.get("ANTHROPIC_API_KEY"))
+
+            # Listar herramientas disponibles
+            response = await session.list_tools()
+            tools = [{
+                "name": tool.name,
+                "description": tool.description,
+                "input_schema": tool.inputSchema
+            } for tool in response.tools]
+
+            # Crear mensaje con Claude usando las herramientas
+            response = anthropic.messages.create(
+                model="claude-3-5-sonnet-20241022",
+                max_tokens=1000,
+                messages=[{"role": "user", "content": "Busca documentación sobre React hooks"}],
+                tools=tools
+            )
+
+            print(response.content[0].text)
+
+if __name__ == "__main__":
+    asyncio.run(main())</code></pre>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contacto Section -->
+    <section id="contacto" class="py-5 bg-dark text-white">
+      <div class="container">
+        <div class="row justify-content-center mb-5">
+          <div class="col-lg-8 text-center">
+            <h2 class="display-5 fw-bold mb-4">Únete a la comunidad MCP</h2>
+            <p class="lead">Conéctate con otros desarrolladores, contribuye al proyecto y mantente actualizado sobre las últimas novedades.</p>
+          </div>
+        </div>
+
+        <div class="row g-4 justify-content-center">
+          <div class="col-md-6 col-lg-3">
+            <div class="card bg-dark-subtle border-0 h-100 text-center">
+              <div class="card-body p-4">
+                <div class="rounded-circle bg-primary bg-opacity-10 p-3 d-inline-flex mb-3">
+                  <i class="fab fa-github fa-2x text-white"></i>
+                </div>
+                <h4>GitHub</h4>
+                <p>Explora el código fuente, reporta problemas y contribuye al desarrollo.</p>
+                <a href="https://github.com/modelcontextprotocol" target="_blank" class="btn btn-outline-light mt-2">
+                  <i class="fab fa-github me-2"></i> Repositorios
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-6 col-lg-3">
+            <div class="card bg-dark-subtle border-0 h-100 text-center">
+              <div class="card-body p-4">
+                <div class="rounded-circle bg-primary bg-opacity-10 p-3 d-inline-flex mb-3">
+                  <i class="fab fa-discord fa-2x text-white"></i>
+                </div>
+                <h4>Discord</h4>
+                <p>Únete a nuestra comunidad para discusiones, soporte y colaboración.</p>
+                <a href="https://discord.gg/modelcontextprotocol" target="_blank" class="btn btn-outline-light mt-2">
+                  <i class="fab fa-discord me-2"></i> Unirse
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-6 col-lg-3">
+            <div class="card bg-dark-subtle border-0 h-100 text-center">
+              <div class="card-body p-4">
+                <div class="rounded-circle bg-primary bg-opacity-10 p-3 d-inline-flex mb-3">
+                  <i class="fas fa-book fa-2x text-white"></i>
+                </div>
+                <h4>Documentación</h4>
+                <p>Consulta la documentación completa para aprender a utilizar MCP.</p>
+                <a href="https://modelcontextprotocol.github.io/docs/" target="_blank" class="btn btn-outline-light mt-2">
+                  <i class="fas fa-external-link-alt me-2"></i> Leer docs
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-6 col-lg-3">
+            <div class="card bg-dark-subtle border-0 h-100 text-center">
+              <div class="card-body p-4">
+                <div class="rounded-circle bg-primary bg-opacity-10 p-3 d-inline-flex mb-3">
+                  <i class="fab fa-twitter fa-2x text-white"></i>
+                </div>
+                <h4>Twitter</h4>
+                <p>Sigue nuestras actualizaciones y anuncios en Twitter/X.</p>
+                <a href="https://twitter.com/mcp_protocol" target="_blank" class="btn btn-outline-light mt-2">
+                  <i class="fab fa-twitter me-2"></i> Seguir
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row mt-5">
+          <div class="col-lg-6 mx-auto">
+            <div class="card bg-dark-subtle border-0">
+              <div class="card-body p-4">
+                <h3 class="text-center mb-4">¿Preguntas o sugerencias?</h3>
+                <form>
+                  <div class="mb-3">
+                    <label for="name" class="form-label">Nombre</label>
+                    <input type="text" class="form-control" id="name" placeholder="Tu nombre">
+                  </div>
+                  <div class="mb-3">
+                    <label for="email" class="form-label">Correo electrónico</label>
+                    <input type="email" class="form-control" id="email" placeholder="tu@email.com">
+                  </div>
+                  <div class="mb-3">
+                    <label for="message" class="form-label">Mensaje</label>
+                    <textarea class="form-control" id="message" rows="4" placeholder="Tu mensaje o consulta"></textarea>
+                  </div>
+                  <div class="d-grid">
+                    <button type="submit" class="btn btn-primary">Enviar mensaje</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white text-center py-4 border-top border-secondary">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-12 mb-3">
+            <h4 class="mb-3">Model Context Protocol</h4>
+            <div class="d-flex justify-content-center gap-3 mb-3">
+              <a href="https://github.com/modelcontextprotocol" target="_blank" class="text-white">
+                <i class="fab fa-github fa-lg"></i>
+              </a>
+              <a href="https://discord.gg/modelcontextprotocol" target="_blank" class="text-white">
+                <i class="fab fa-discord fa-lg"></i>
+              </a>
+              <a href="https://twitter.com/mcp_protocol" target="_blank" class="text-white">
+                <i class="fab fa-twitter fa-lg"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <p class="mb-0">&copy; 2024 Model Context Protocol. Todos los derechos reservados.</p>
+            <p class="small text-muted mt-2">MCP es un proyecto de código abierto bajo la licencia MIT.</p>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+
+    <!-- Custom JS -->
+    <script src="js/main.js"></script>
+  </body>
+</html>

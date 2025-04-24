@@ -1,0 +1,135 @@
+/* Estilos generales */
+:root {
+  --primary-color: #6610f2;
+  --secondary-color: #0dcaf0;
+  --dark-color: #212529;
+  --light-color: #f8f9fa;
+  --success-color: #198754;
+  --info-color: #0dcaf0;
+  --warning-color: #ffc107;
+  --danger-color: #dc3545;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  line-height: 1.6;
+  color: #333;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 700;
+}
+
+section {
+  padding: 80px 0;
+}
+
+/* Hero Section */
+#hero {
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  color: white;
+  padding: 120px 0 80px;
+  position: relative;
+}
+
+#hero .overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.3);
+  z-index: 1;
+}
+
+#hero .container {
+  position: relative;
+  z-index: 2;
+}
+
+/* Tarjetas de servidores */
+.server-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border-radius: 10px;
+  overflow: hidden;
+  height: 100%;
+}
+
+.server-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.server-card .card-header {
+  background-color: var(--primary-color);
+  color: white;
+  font-weight: bold;
+}
+
+.server-icon {
+  font-size: 2.5rem;
+  margin-bottom: 15px;
+  color: var(--primary-color);
+}
+
+/* Sección de demostración */
+.demo-container {
+  background-color: #f8f9fa;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+}
+
+/* Botones */
+.btn-primary {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+.btn-primary:hover {
+  background-color: #5a0dbd;
+  border-color: #5a0dbd;
+}
+
+.btn-outline-primary {
+  color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+.btn-outline-primary:hover {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+/* Animaciones */
+.fade-in {
+  animation: fadeIn 1s ease-in;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Código de ejemplo */
+.code-block {
+  background-color: #272822;
+  color: #f8f8f2;
+  border-radius: 5px;
+  padding: 15px;
+  margin: 15px 0;
+  overflow-x: auto;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  #hero {
+    padding: 100px 0 60px;
+  }
+  
+  .server-card {
+    margin-bottom: 20px;
+  }
+}

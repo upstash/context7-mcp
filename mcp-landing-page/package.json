@@ -1,0 +1,29 @@
+{
+  "name": "mcp-landing-page",
+  "version": "1.0.0",
+  "description": "Landing page para Model Context Protocol (MCP)",
+  "main": "index.html",
+  "type": "module",
+  "scripts": {
+    "test-mcp": "node test-mcp.js",
+    "start": "npx serve"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "ai",
+    "llm",
+    "context7",
+    "puppeteer",
+    "sequential-thinking",
+    "github"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/server-github": "^0.1.0",
+    "@modelcontextprotocol/server-puppeteer": "^0.1.0",
+    "@modelcontextprotocol/server-sequential-thinking": "^0.1.0",
+    "@upstash/context7-mcp": "^0.1.0"
+  }
+}
