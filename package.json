@@ -31,7 +31,7 @@
   },
   "homepage": "https://github.com/upstash/context7#readme",
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.8.0",
+    "@modelcontextprotocol/sdk": "^1.10.2",
     "zod": "^3.24.2"
   },
   "devDependencies": {
