@@ -5,6 +5,7 @@ import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
 import { z } from "zod";
 import { searchLibraries, fetchLibraryDocumentation } from "./lib/api.js";
 import { formatSearchResults } from "./lib/utils.js";
+import { VERSION } from "./lib/version.js";
 
 const DEFAULT_MINIMUM_TOKENS = 5000;
 
@@ -12,7 +13,7 @@ const DEFAULT_MINIMUM_TOKENS = 5000;
 const server = new McpServer({
   name: "Context7",
   description: "Retrieves up-to-date documentation and code examples for any library.",
-  version: "1.0.6",
+  version: VERSION,
   capabilities: {
     resources: {},
     tools: {},
@@ -129,7 +130,7 @@ server.tool(
 async function main() {
   const transport = new StdioServerTransport();
   await server.connect(transport);
-  console.error("Context7 Documentation MCP Server running on stdio");
+  console.error(`Context7 Documentation MCP Server v${VERSION} running on stdio`);
 }
 
 main().catch((error) => {
