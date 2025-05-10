@@ -1,6 +1,7 @@
 # Context7 MCP - Up-to-date Code Docs For Any Prompt
 
 [![Website](https://img.shields.io/badge/Website-context7.com-blue)](https://context7.com) [![smithery badge](https://smithery.ai/badge/@upstash/context7-mcp)](https://smithery.ai/server/@upstash/context7-mcp) [<img alt="Install in VS Code (npx)" src="https://img.shields.io/badge/VS_Code-VS_Code?style=flat-square&label=Install%20Context7%20MCP&color=0098FF">](https://insiders.vscode.dev/redirect?url=vscode%3Amcp%2Finstall%3F%7B%22name%22%3A%22context7%22%2C%22command%22%3A%22npx%22%2C%22args%22%3A%5B%22-y%22%2C%22%40upstash%2Fcontext7-mcp%40latest%22%5D%7D)
+[![mcp.bar badge](https://www.mcp.bar/badge/upstash/context7-mcp)](https://www.mcp.bar/server/upstash/context7-mcp)
 
 [![中文文档](https://img.shields.io/badge/docs-中文版-yellow)](./docs/README.zh-CN.md) [![한국어 문서](https://img.shields.io/badge/docs-한국어-green)](./docs/README.ko.md) [![Documentación en Español](https://img.shields.io/badge/docs-Español-orange)](./docs/README.es.md) [![Documentation en Français](https://img.shields.io/badge/docs-Français-blue)](./docs/README.fr.md) [![Documentação em Português (Brasil)](https://img.shields.io/badge/docs-Português%20(Brasil)-purple)](./docs/README.pt-BR.md) [![Documentazione in italiano](https://img.shields.io/badge/docs-Italian-red)](./docs/README.it.md) [![Dokumentasi Bahasa Indonesia](https://img.shields.io/badge/docs-Bahasa%20Indonesia-pink)](./docs/README.id-ID.md) [![Dokumentation auf Deutsch](https://img.shields.io/badge/docs-Deutsch-darkgreen)](./docs/README.de.md) [![Документация на русском языке](https://img.shields.io/badge/docs-Русский-darkblue)](./docs/README.ru.md) [![Türkçe Doküman](https://img.shields.io/badge/docs-Türkçe-blue)](./docs/README.tr.md)
 
@@ -49,6 +50,45 @@ To install Context7 MCP Server for Claude Desktop automatically via [Smithery](h
 ```bash
 npx -y @smithery/cli install @upstash/context7-mcp --client claude
 ```
+
+### Installing via MCP.Bar
+
+You can easily install Context7 using MCP.Bar with either of these methods:
+
+#### Option 1: One-Command Installation
+
+```bash
+npx mcpbar@latest install upstash/context7-mcp -c claude
+```
+
+This command will automatically install and configure the Context7 MCP server for your selected client.
+
+#### Option 2: Manual Configuration
+
+Run the command below to open your configuration file:
+
+```bash
+npx mcpbar@latest edit -c claude
+```
+
+After opening your configuration file, add this configuration:
+
+```json
+{
+  "mcpServers": {
+    "Context7": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@upstash/context7-mcp@latest"
+      ]
+    }
+  }
+}
+```
+
+Note that different MCP clients have different configuration schemas. You may need to adjust the above configuration based on your specific client. Please refer to the client-specific installation sections below for the appropriate configuration format for your editor or IDE.
 
 ### Install in Cursor
 
