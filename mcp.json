@@ -1,0 +1,27 @@
+{
+  "name": "@upstash/context7-mcp",
+  "version": "1.0.6",
+  "description": "MCP server for Context7",
+  "homepage": "https://context7.com",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/upstash/context7-mcp"
+  },
+  "license": "MIT",
+  "keywords": [
+    "llm",
+    "mcp",
+    "mcp-server",
+    "vibe-coding",
+    "model-context-protocol"
+  ],
+  "inputs": [],
+  "server": {
+    "type": "stdio",
+    "command": "npx",
+    "args": [
+      "-y",
+      "@upstash/context7-mcp@latest"
+    ]
+  }
+}
