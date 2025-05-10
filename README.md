@@ -180,12 +180,12 @@ Open the "Settings" page of the app, navigate to "Plugins," and enter the follow
 
 ```json
 {
-	"mcpServers": {
-		"context7": {
-			"args": ["-y", "@upstash/context7-mcp@latest"],
-			"command": "npx"
-		}
-	}
+  "mcpServers": {
+    "context7": {
+      "command": "npx",
+      "args": ["-y", "@upstash/context7-mcp@latest"]
+    }
+  }
 }
 ```
 
