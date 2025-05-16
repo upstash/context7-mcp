@@ -37,17 +37,25 @@ const server = new McpServer({
 // Register Context7 tools
 server.tool(
   "resolve-library-id",
-  `Resolves a package name to a Context7-compatible library ID and returns a list of matching libraries.
+  `Resolves a package/product name to a Context7-compatible library ID and returns a list of matching libraries.
 
 You MUST call this function before 'get-library-docs' to obtain a valid Context7-compatible library ID.
 
-When selecting the best match, consider:
-- Name similarity to the query
-- Description relevance
-- Code Snippet count (documentation coverage)
-- GitHub Stars (popularity)
+Selection Process:
+1. Analyze the query to understand what library/package the user is looking for
+2. Return the most relevant match based on:
+- Name similarity to the query (exact matches prioritized)
+- Description relevance to the query's intent
+- Documentation coverage (prioritize libraries with higher Code Snippet counts)
+- Trust score (consider libraries with scores of 7-10 more authoritative)
 
-Return the selected library ID and explain your choice. If there are multiple good matches, mention this but proceed with the most relevant one.`,
+Response Format:
+- Return the selected library ID in a clearly marked section
+- Provide a brief explanation for why this library was chosen
+- If multiple good matches exist, acknowledge this but proceed with the most relevant one
+- If no good matches exist, clearly state this and suggest query refinements
+
+For ambiguous queries, request clarification before proceeding with a best-guess match.`,
   {
     libraryName: z
       .string()
@@ -91,11 +99,11 @@ Each result includes:
 - Name: Library or package name
 - Description: Short summary
 - Code Snippets: Number of available code examples
-- GitHub Stars: Popularity indicator
+- Trust Score: Authority indicator
 
-For best results, select libraries based on name match, popularity (stars), snippet coverage, and relevance to your use case.
+For best results, select libraries based on name match, trust score, snippet coverage, and relevance to your use case.
 
----
+----------
 
 ${resultsText}`,
         },

@@ -1,14 +1,15 @@
 export interface SearchResult {
   id: string;
   title: string;
-  description?: string;
+  description: string;
   branch: string;
-  lastUpdate: string;
+  lastUpdateDate: string;
   state: DocumentState;
   totalTokens: number;
   totalSnippets: number;
   totalPages: number;
-  stars: number;
+  stars?: number;
+  trustScore?: number;
 }
 
 export interface SearchResponse {
