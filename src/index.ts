@@ -6,6 +6,9 @@ import { z } from "zod";
 import { searchLibraries, fetchLibraryDocumentation } from "./lib/api.js";
 import { formatSearchResults } from "./lib/utils.js";
 import dotenv from "dotenv";
+import { createServer } from "http";
+import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
+import { SSEServerTransport } from "@modelcontextprotocol/sdk/server/sse.js";
 
 // Load environment variables from .env file if present
 dotenv.config();
@@ -173,9 +176,27 @@ server.tool(
 );
 
 async function main() {
-  const transport = new StdioServerTransport();
-  await server.connect(transport);
-  console.error("Context7 Documentation MCP Server running on stdio");
+  const transportType = process.env.MCP_TRANSPORT || "stdio";
+
+  if (transportType === "http" || transportType === "sse") {
+    const port = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
+    const httpServer = createServer(async (req, res) => {
+      // For HTTP/SSE, use StreamableHTTPServerTransport
+      // Optionally, you could use SSEServerTransport for pure SSE endpoints
+      const transport = new StreamableHTTPServerTransport({
+        sessionIdGenerator: () => Math.random().toString(36).slice(2),
+      });
+      await server.connect(transport);
+      await transport.handleRequest(req, res);
+    });
+    httpServer.listen(port, () => {
+      console.error(`Context7 Documentation MCP Server running on ${transportType.toUpperCase()} at http://localhost:${port}`);
+    });
+  } else {
+    const transport = new StdioServerTransport();
+    await server.connect(transport);
+    console.error("Context7 Documentation MCP Server running on stdio");
+  }
 }
 
 main().catch((error) => {
