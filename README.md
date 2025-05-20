@@ -159,6 +159,14 @@ Run this command. See [Claude Code MCP docs](https://docs.anthropic.com/en/docs/
 claude mcp add context7 -- npx -y @upstash/context7-mcp
 ```
 
+If you have built the Docker image (see the Docker section above), you can add the MCP server using Docker:
+
+```sh
+claude mcp add -t stdio context7 -- docker run -i --rm context7-mcp
+```
+
+This will run the Context7 MCP server inside a Docker container and connect it to Claude Code via stdio.
+
 ### Install in Claude Desktop
 
 Add this to your Claude Desktop `claude_desktop_config.json` file. See [Claude Desktop MCP docs](https://modelcontextprotocol.io/quickstart/user) for more info.
