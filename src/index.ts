@@ -180,17 +180,20 @@ async function main() {
 
   if (transportType === "http" || transportType === "sse") {
     const port = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
+    const transport = new StreamableHTTPServerTransport({
+      sessionIdGenerator: undefined,
+    });
+    await server.connect(transport);
     const httpServer = createServer(async (req, res) => {
-      // For HTTP/SSE, use StreamableHTTPServerTransport
-      // Optionally, you could use SSEServerTransport for pure SSE endpoints
-      const transport = new StreamableHTTPServerTransport({
-        sessionIdGenerator: () => Math.random().toString(36).slice(2),
-      });
-      await server.connect(transport);
-      await transport.handleRequest(req, res);
+      if (req.url === "/mcp") {
+        await transport.handleRequest(req, res);
+      } else {
+        res.writeHead(404);
+        res.end("Not found");
+      }
     });
     httpServer.listen(port, () => {
-      console.error(`Context7 Documentation MCP Server running on ${transportType.toUpperCase()} at http://localhost:${port}`);
+      console.error(`Context7 Documentation MCP Server running on ${transportType.toUpperCase()} at http://localhost:${port}/mcp`);
     });
   } else {
     const transport = new StdioServerTransport();
