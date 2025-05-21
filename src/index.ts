@@ -9,6 +9,7 @@ import dotenv from "dotenv";
 import { createServer } from "http";
 import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
 import { SSEServerTransport } from "@modelcontextprotocol/sdk/server/sse.js";
+import { parse } from "url";
 
 // Load environment variables from .env file if present
 dotenv.config();
@@ -184,16 +185,39 @@ async function main() {
       sessionIdGenerator: undefined,
     });
     await server.connect(transport);
+
+    // In-memory store for legacy SSE transports
+    const legacySseTransports: { [sessionId: string]: SSEServerTransport } = {};
+
     const httpServer = createServer(async (req, res) => {
-      if (req.url === "/mcp") {
+      const url = parse(req.url || "").pathname;
+      if (url === "/mcp") {
         await transport.handleRequest(req, res);
+      } else if (url === "/sse" && req.method === "GET") {
+        // Legacy SSE endpoint for older clients
+        const sseTransport = new SSEServerTransport("/messages", res);
+        legacySseTransports[sseTransport.sessionId] = sseTransport;
+        res.on("close", () => {
+          delete legacySseTransports[sseTransport.sessionId];
+        });
+        await server.connect(sseTransport);
+      } else if (url === "/messages" && req.method === "POST") {
+        // Legacy SSE POST endpoint for older clients
+        let sessionId = req.headers["x-session-id"] || (req.url?.split("?sessionId=")[1]);
+        if (Array.isArray(sessionId)) sessionId = sessionId[0];
+        if (sessionId && legacySseTransports[sessionId]) {
+          await legacySseTransports[sessionId].handlePostMessage(req, res);
+        } else {
+          res.writeHead(404);
+          res.end("Not found");
+        }
       } else {
         res.writeHead(404);
         res.end("Not found");
       }
     });
     httpServer.listen(port, () => {
-      console.error(`Context7 Documentation MCP Server running on ${transportType.toUpperCase()} at http://localhost:${port}/mcp`);
+      console.error(`Context7 Documentation MCP Server running on ${transportType.toUpperCase()} at http://localhost:${port}/mcp and legacy SSE at /sse`);
     });
   } else {
     const transport = new StdioServerTransport();
