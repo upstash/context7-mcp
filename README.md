@@ -2,7 +2,7 @@
 
 [![Website](https://img.shields.io/badge/Website-context7.com-blue)](https://context7.com) [![smithery badge](https://smithery.ai/badge/@upstash/context7-mcp)](https://smithery.ai/server/@upstash/context7-mcp) [<img alt="Install in VS Code (npx)" src="https://img.shields.io/badge/VS_Code-VS_Code?style=flat-square&label=Install%20Context7%20MCP&color=0098FF">](https://insiders.vscode.dev/redirect?url=vscode%3Amcp%2Finstall%3F%7B%22name%22%3A%22context7%22%2C%22command%22%3A%22npx%22%2C%22args%22%3A%5B%22-y%22%2C%22%40upstash%2Fcontext7-mcp%40latest%22%5D%7D)
 
-[![中文文档](https://img.shields.io/badge/docs-中文版-yellow)](./docs/README.zh-CN.md) [![한국어 문서](https://img.shields.io/badge/docs-한국어-green)](./docs/README.ko.md) [![Documentación en Español](https://img.shields.io/badge/docs-Español-orange)](./docs/README.es.md) [![Documentation en Français](https://img.shields.io/badge/docs-Français-blue)](./docs/README.fr.md) [![Documentação em Português (Brasil)](https://img.shields.io/badge/docs-Português%20(Brasil)-purple)](./docs/README.pt-BR.md) [![Documentazione in italiano](https://img.shields.io/badge/docs-Italian-red)](./docs/README.it.md) [![Dokumentasi Bahasa Indonesia](https://img.shields.io/badge/docs-Bahasa%20Indonesia-pink)](./docs/README.id-ID.md) [![Dokumentation auf Deutsch](https://img.shields.io/badge/docs-Deutsch-darkgreen)](./docs/README.de.md) [![Документация на русском языке](https://img.shields.io/badge/docs-Русский-darkblue)](./docs/README.ru.md) [![Türkçe Doküman](https://img.shields.io/badge/docs-Türkçe-blue)](./docs/README.tr.md)
+[![中文文档](https://img.shields.io/badge/docs-中文版-yellow)](./docs/README.zh-CN.md) [![한국어 문서](https://img.shields.io/badge/docs-한국어-green)](./docs/README.ko.md) [![Documentación en Español](https://img.shields.io/badge/docs-Español-orange)](./docs/README.es.md) [![Documentation en Français](https://img.shields.io/badge/docs-Français-blue)](./docs/README.fr.md) [![Documentação em Português (Brasil)](https://img.shields.io/badge/docs-Português%20(Brasil)-purple)](./docs/README.pt-BR.md) [![Documentazione in italiano](https://img.shields.io/badge/docs-Italian-red)](./docs/README.it.md) [![Dokumentasi Bahasa Indonesia](https://img.shields.io/badge/docs-Bahasa%20Indonesia-pink)](./docs/README.id-ID.md) [![Dokumentation auf Deutsch](https://img.shields.io/badge/docs-Deutsch-darkgreen)](./docs/README.de.md) [![Документация на русском языке](https://img.shields.io/badge/docs-Русский-darkblue)](./docs/README.ru.md) [![Türkçe Doküman](https://img.shields.io/badge/docs-Türkçe-blue)](./docs/README.tr.md) [![Arabic Documentation](https://img.shields.io/badge/docs-Arabic-white)](./docs/README.ar.md)
 
 
 ## ❌ Without Context7
@@ -61,7 +61,7 @@ Pasting the following configuration into your Cursor `~/.cursor/mcp.json` file i
   "mcpServers": {
     "context7": {
       "command": "npx",
-      "args": ["-y", "@upstash/context7-mcp@latest"]
+      "args": ["-y", "@upstash/context7-mcp"]
     }
   }
 }
@@ -75,7 +75,7 @@ Pasting the following configuration into your Cursor `~/.cursor/mcp.json` file i
   "mcpServers": {
     "context7": {
       "command": "bunx",
-      "args": ["-y", "@upstash/context7-mcp@latest"]
+      "args": ["-y", "@upstash/context7-mcp"]
     }
   }
 }
@@ -108,7 +108,7 @@ Add this to your Windsurf MCP config file. See [Windsurf MCP docs](https://docs.
   "mcpServers": {
     "context7": {
       "command": "npx",
-      "args": ["-y", "@upstash/context7-mcp@latest"]
+      "args": ["-y", "@upstash/context7-mcp"]
     }
   }
 }
@@ -127,7 +127,7 @@ Add this to your VS Code MCP config file. See [VS Code MCP docs](https://code.vi
     "Context7": {
       "type": "stdio",
       "command": "npx",
-      "args": ["-y", "@upstash/context7-mcp@latest"]
+      "args": ["-y", "@upstash/context7-mcp"]
     }
   }
 }
@@ -143,7 +143,7 @@ It can be installed via [Zed Extensions](https://zed.dev/extensions?query=Contex
     "Context7": {
       "command": {
         "path": "npx",
-        "args": ["-y", "@upstash/context7-mcp@latest"]
+        "args": ["-y", "@upstash/context7-mcp"]
       },
       "settings": {}
     }
@@ -156,7 +156,7 @@ It can be installed via [Zed Extensions](https://zed.dev/extensions?query=Contex
 Run this command. See [Claude Code MCP docs](https://docs.anthropic.com/en/docs/agents-and-tools/claude-code/tutorials#set-up-model-context-protocol-mcp) for more info.
 
 ```sh
-claude mcp add context7 -- npx -y @upstash/context7-mcp@latest
+claude mcp add context7 -- npx -y @upstash/context7-mcp
 ```
 
 ### Install in Claude Desktop
@@ -168,7 +168,7 @@ Add this to your Claude Desktop `claude_desktop_config.json` file. See [Claude D
   "mcpServers": {
     "Context7": {
       "command": "npx",
-      "args": ["-y", "@upstash/context7-mcp@latest"]
+      "args": ["-y", "@upstash/context7-mcp"]
     }
   }
 }
@@ -183,7 +183,7 @@ Open the "Settings" page of the app, navigate to "Plugins," and enter the follow
   "mcpServers": {
     "context7": {
       "command": "npx",
-      "args": ["-y", "@upstash/context7-mcp@latest"]
+      "args": ["-y", "@upstash/context7-mcp"]
     }
   }
 }
@@ -208,7 +208,7 @@ If you prefer to run the MCP server in a Docker container:
     WORKDIR /app
 
     # Install the latest version globally
-    RUN npm install -g @upstash/context7-mcp@latest
+    RUN npm install -g @upstash/context7-mcp
 
     # Expose default port if needed (optional, depends on MCP client interaction)
     # EXPOSE 3000
@@ -259,7 +259,7 @@ The configuration on Windows is slightly different compared to Linux or macOS (*
         "/c",
         "npx",
         "-y",
-        "@upstash/context7-mcp@latest"
+        "@upstash/context7-mcp"
       ],
       "disabled": false,
       "autoApprove": []
@@ -279,7 +279,7 @@ Examples:
   "mcpServers": {
     "context7": {
       "command": "npx",
-      "args": ["-y", "@upstash/context7-mcp@latest"],
+      "args": ["-y", "@upstash/context7-mcp"],
       "env": {
         "DEFAULT_MINIMUM_TOKENS": "10000"
       }
@@ -327,7 +327,7 @@ bun run build
 ### Testing with MCP Inspector
 
 ```bash
-npx -y @modelcontextprotocol/inspector npx @upstash/context7-mcp@latest
+npx -y @modelcontextprotocol/inspector npx @upstash/context7-mcp
 ```
 
 ## Troubleshooting
@@ -341,7 +341,7 @@ If you see this error, try using `bunx` instead of `npx`.
   "mcpServers": {
     "context7": {
       "command": "bunx",
-      "args": ["-y", "@upstash/context7-mcp@latest"]
+      "args": ["-y", "@upstash/context7-mcp"]
     }
   }
 }
@@ -361,7 +361,26 @@ If you encounter an error like: `Error: Cannot find module 'uriTemplate.js'` try
       "args": [
         "-y",
         "--node-options=--experimental-vm-modules",
-        "@upstash/context7-mcp@1.0.6"
+        "@upstash/context7-mcp"
+      ]
+    }
+  }
+}
+```
+
+### TLS/Certificate Issues
+
+Use the `--experimental-fetch` flag with `npx` to bypass TLS-related issues:
+
+```json
+{
+  "mcpServers": {
+    "context7": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "--node-options=--experimental-fetch",
+        "@upstash/context7-mcp"
       ]
     }
   }
@@ -370,7 +389,7 @@ If you encounter an error like: `Error: Cannot find module 'uriTemplate.js'` try
 
 ### MCP Client Errors
 
-1. Try removing `@latest` from the package name.
+1. Try adding `@latest` to the package name.
 
 2. Try using `bunx` as an alternative.
 
@@ -381,6 +400,13 @@ If you encounter an error like: `Error: Cannot find module 'uriTemplate.js'` try
 ## Disclaimer
 
 Context7 projects are community-contributed and while we strive to maintain high quality, we cannot guarantee the accuracy, completeness, or security of all library documentation. Projects listed in Context7 are developed and maintained by their respective owners, not by Context7. If you encounter any suspicious, inappropriate, or potentially harmful content, please use the "Report" button on the project page to notify us immediately. We take all reports seriously and will review flagged content promptly to maintain the integrity and safety of our platform. By using Context7, you acknowledge that you do so at your own discretion and risk.
+
+## Connect with Us
+
+Stay updated and join our community:
+- 📢 Follow us on [X](https://x.com/contextai) for the latest news and updates
+- 🌐 Visit our [Website](https://context7.com)
+- 💬 Join our [Discord Community](https://upstash.com/discord) (if applicable)
 
 ## Context7 In Media
 

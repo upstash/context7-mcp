@@ -20,9 +20,9 @@ export function formatSearchResult(result: SearchResult): string {
     formattedResult.push(`- Code Snippets: ${result.totalSnippets}`);
   }
 
-  // Only add GitHub stars if it's a valid value
-  if (result.stars !== -1 && result.stars !== undefined) {
-    formattedResult.push(`- GitHub Stars: ${result.stars}`);
+  // Only add trust score if it's a valid value
+  if (result.trustScore !== -1 && result.trustScore !== undefined) {
+    formattedResult.push(`- Trust Score: ${result.trustScore}`);
   }
 
   // Join all parts with newlines
@@ -42,5 +42,5 @@ export function formatSearchResults(searchResponse: SearchResponse): string {
   }
 
   const formattedResults = searchResponse.results.map(formatSearchResult);
-  return formattedResults.join("\n---\n");
+  return formattedResults.join("\n----------\n");
 }
