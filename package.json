@@ -1,6 +1,6 @@
 {
-  "name": "@upstash/context7-mcp",
-  "version": "1.0.6",
+  "name": "@buggyhunter/context7-mcp",
+  "version": "1.0.7",
   "description": "MCP server for Context7",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -31,7 +31,7 @@
   },
   "homepage": "https://github.com/upstash/context7#readme",
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.8.0",
+    "@modelcontextprotocol/sdk": "^1.11.4",
     "dotenv": "^16.5.0",
     "zod": "^3.24.2"
   },
