@@ -10,9 +10,13 @@ import { createServer } from "http";
 import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
 import { SSEServerTransport } from "@modelcontextprotocol/sdk/server/sse.js";
 import { parse } from "url";
+import { randomUUID } from "crypto";
 
 // Load environment variables from .env file if present
 dotenv.config();
+
+// Store SSE transports by session ID
+const sseTransports: Record<string, SSEServerTransport> = {};
 
 // Get DEFAULT_MINIMUM_TOKENS from environment variable or use default
 let DEFAULT_MINIMUM_TOKENS = 10000;
@@ -27,21 +31,21 @@ if (process.env.DEFAULT_MINIMUM_TOKENS) {
   }
 }
 
-// Create server instance
-const server = new McpServer({
-  name: "Context7",
-  description: "Retrieves up-to-date documentation and code examples for any library.",
-  version: "1.0.6",
-  capabilities: {
-    resources: {},
-    tools: {},
-  },
-});
+// Function to create a new server instance with all tools registered
+function createServerInstance() {
+  const server = new McpServer({
+    name: "Context7",
+    description: "Retrieves up-to-date documentation and code examples for any library.",
+    version: "1.0.6",
+    capabilities: {
+      resources: {},
+      tools: {},
+    },
+  });
 
-// Register Context7 tools
-server.tool(
-  "resolve-library-id",
-  `Resolves a package/product name to a Context7-compatible library ID and returns a list of matching libraries.
+  server.tool(
+    "resolve-library-id",
+    `Resolves a package/product name to a Context7-compatible library ID and returns a list of matching libraries.
 
 You MUST call this function before 'get-library-docs' to obtain a valid Context7-compatible library ID.
 
@@ -60,43 +64,43 @@ Response Format:
 - If no good matches exist, clearly state this and suggest query refinements
 
 For ambiguous queries, request clarification before proceeding with a best-guess match.`,
-  {
-    libraryName: z
-      .string()
-      .describe("Library name to search for and retrieve a Context7-compatible library ID."),
-  },
-  async ({ libraryName }) => {
-    const searchResponse = await searchLibraries(libraryName);
+    {
+      libraryName: z
+        .string()
+        .describe("Library name to search for and retrieve a Context7-compatible library ID."),
+    },
+    async ({ libraryName }) => {
+      const searchResponse = await searchLibraries(libraryName);
 
-    if (!searchResponse || !searchResponse.results) {
+      if (!searchResponse || !searchResponse.results) {
+        return {
+          content: [
+            {
+              type: "text",
+              text: "Failed to retrieve library documentation data from Context7",
+            },
+          ],
+        };
+      }
+
+      if (searchResponse.results.length === 0) {
+        return {
+          content: [
+            {
+              type: "text",
+              text: "No documentation libraries available",
+            },
+          ],
+        };
+      }
+
+      const resultsText = formatSearchResults(searchResponse);
+
       return {
         content: [
           {
             type: "text",
-            text: "Failed to retrieve library documentation data from Context7",
-          },
-        ],
-      };
-    }
-
-    if (searchResponse.results.length === 0) {
-      return {
-        content: [
-          {
-            type: "text",
-            text: "No documentation libraries available",
-          },
-        ],
-      };
-    }
-
-    const resultsText = formatSearchResults(searchResponse);
-
-    return {
-      content: [
-        {
-          type: "text",
-          text: `Available Libraries (top matches):
+            text: `Available Libraries (top matches):
 
 Each result includes:
 - Library ID: Context7-compatible identifier (format: /org/repo)
@@ -110,119 +114,158 @@ For best results, select libraries based on name match, trust score, snippet cov
 ----------
 
 ${resultsText}`,
-        },
-      ],
-    };
-  }
-);
-
-server.tool(
-  "get-library-docs",
-  "Fetches up-to-date documentation for a library. You must call 'resolve-library-id' first to obtain the exact Context7-compatible library ID required to use this tool.",
-  {
-    context7CompatibleLibraryID: z
-      .string()
-      .describe(
-        "Exact Context7-compatible library ID (e.g., 'mongodb/docs', 'vercel/nextjs') retrieved from 'resolve-library-id'."
-      ),
-    topic: z
-      .string()
-      .optional()
-      .describe("Topic to focus documentation on (e.g., 'hooks', 'routing')."),
-    tokens: z
-      .preprocess((val) => (typeof val === "string" ? Number(val) : val), z.number())
-      .transform((val) => (val < DEFAULT_MINIMUM_TOKENS ? DEFAULT_MINIMUM_TOKENS : val))
-      .optional()
-      .describe(
-        `Maximum number of tokens of documentation to retrieve (default: ${DEFAULT_MINIMUM_TOKENS}). Higher values provide more context but consume more tokens.`
-      ),
-  },
-  async ({ context7CompatibleLibraryID, tokens = DEFAULT_MINIMUM_TOKENS, topic = "" }) => {
-    // Extract folders parameter if present in the ID
-    let folders = "";
-    let libraryId = context7CompatibleLibraryID;
-
-    if (context7CompatibleLibraryID.includes("?folders=")) {
-      const [id, foldersParam] = context7CompatibleLibraryID.split("?folders=");
-      libraryId = id;
-      folders = foldersParam;
-    }
-
-    const documentationText = await fetchLibraryDocumentation(libraryId, {
-      tokens,
-      topic,
-      folders,
-    });
-
-    if (!documentationText) {
-      return {
-        content: [
-          {
-            type: "text",
-            text: "Documentation not found or not finalized for this library. This might have happened because you used an invalid Context7-compatible library ID. To get a valid Context7-compatible library ID, use the 'resolve-library-id' with the package name you wish to retrieve documentation for.",
           },
         ],
       };
     }
+  );
 
-    return {
-      content: [
-        {
-          type: "text",
-          text: documentationText,
-        },
-      ],
-    };
-  }
-);
+  server.tool(
+    "get-library-docs",
+    "Fetches up-to-date documentation for a library. You must call 'resolve-library-id' first to obtain the exact Context7-compatible library ID required to use this tool.",
+    {
+      context7CompatibleLibraryID: z
+        .string()
+        .describe(
+          "Exact Context7-compatible library ID (e.g., 'mongodb/docs', 'vercel/nextjs') retrieved from 'resolve-library-id'."
+        ),
+      topic: z
+        .string()
+        .optional()
+        .describe("Topic to focus documentation on (e.g., 'hooks', 'routing')."),
+      tokens: z
+        .preprocess((val) => (typeof val === "string" ? Number(val) : val), z.number())
+        .transform((val) => (val < DEFAULT_MINIMUM_TOKENS ? DEFAULT_MINIMUM_TOKENS : val))
+        .optional()
+        .describe(
+          `Maximum number of tokens of documentation to retrieve (default: ${DEFAULT_MINIMUM_TOKENS}). Higher values provide more context but consume more tokens.`
+        ),
+    },
+    async ({ context7CompatibleLibraryID, tokens = DEFAULT_MINIMUM_TOKENS, topic = "" }) => {
+      // Extract folders parameter if present in the ID
+      let folders = "";
+      let libraryId = context7CompatibleLibraryID;
+
+      if (context7CompatibleLibraryID.includes("?folders=")) {
+        const [id, foldersParam] = context7CompatibleLibraryID.split("?folders=");
+        libraryId = id;
+        folders = foldersParam;
+      }
+
+      const documentationText = await fetchLibraryDocumentation(libraryId, {
+        tokens,
+        topic,
+        folders,
+      });
+
+      if (!documentationText) {
+        return {
+          content: [
+            {
+              type: "text",
+              text: "Documentation not found or not finalized for this library. This might have happened because you used an invalid Context7-compatible library ID. To get a valid Context7-compatible library ID, use the 'resolve-library-id' with the package name you wish to retrieve documentation for.",
+            },
+          ],
+        };
+      }
+
+      return {
+        content: [
+          {
+            type: "text",
+            text: documentationText,
+          },
+        ],
+      };
+    }
+  );
+
+  return server;
+}
 
 async function main() {
   const transportType = process.env.MCP_TRANSPORT || "stdio";
 
   if (transportType === "http" || transportType === "sse") {
     const port = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
-    const transport = new StreamableHTTPServerTransport({
-      sessionIdGenerator: undefined,
-    });
-    await server.connect(transport);
-
-    // In-memory store for legacy SSE transports
-    const legacySseTransports: { [sessionId: string]: SSEServerTransport } = {};
-
     const httpServer = createServer(async (req, res) => {
       const url = parse(req.url || "").pathname;
-      if (url === "/mcp") {
-        await transport.handleRequest(req, res);
-      } else if (url === "/sse" && req.method === "GET") {
-        // Legacy SSE endpoint for older clients
-        const sseTransport = new SSEServerTransport("/messages", res);
-        legacySseTransports[sseTransport.sessionId] = sseTransport;
-        res.on("close", () => {
-          delete legacySseTransports[sseTransport.sessionId];
-        });
-        await server.connect(sseTransport);
-      } else if (url === "/messages" && req.method === "POST") {
-        // Legacy SSE POST endpoint for older clients
-        let sessionId = req.headers["x-session-id"] || (req.url?.split("?sessionId=")[1]);
-        if (Array.isArray(sessionId)) sessionId = sessionId[0];
-        if (sessionId && legacySseTransports[sessionId]) {
-          await legacySseTransports[sessionId].handlePostMessage(req, res);
+
+      // Set CORS headers for all responses
+      res.setHeader('Access-Control-Allow-Origin', '*');
+      res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS,DELETE');
+      res.setHeader('Access-Control-Allow-Headers', 'Content-Type, MCP-Session-Id, mcp-session-id');
+
+      // Handle preflight OPTIONS requests
+      if (req.method === 'OPTIONS') {
+        res.writeHead(200);
+        res.end();
+        return;
+      }
+
+      try {
+        // Create new server instance for each request
+        const requestServer = createServerInstance();
+
+        if (url === "/mcp") {
+          const transport = new StreamableHTTPServerTransport({
+            sessionIdGenerator: undefined
+          });
+          await requestServer.connect(transport);
+          await transport.handleRequest(req, res);
+        } else if (url === "/sse" && req.method === "GET") {
+          // Create new SSE transport for GET request
+          const sseTransport = new SSEServerTransport("/messages", res);
+          // Store the transport by session ID
+          sseTransports[sseTransport.sessionId] = sseTransport;
+          // Clean up transport when connection closes
+          res.on("close", () => {
+            delete sseTransports[sseTransport.sessionId];
+          });
+          await requestServer.connect(sseTransport);
+        } else if (url === "/messages" && req.method === "POST") {
+          // Get session ID from query parameters
+          const parsedUrl = parse(req.url || "", true);
+          const sessionId = parsedUrl.query.sessionId as string;
+          
+          if (!sessionId) {
+            res.writeHead(400);
+            res.end("Missing sessionId parameter");
+            return;
+          }
+
+          // Get existing transport for this session
+          const sseTransport = sseTransports[sessionId];
+          if (!sseTransport) {
+            res.writeHead(400);
+            res.end(`No transport found for sessionId: ${sessionId}`);
+            return;
+          }
+
+          // Handle the POST message with the existing transport
+          await sseTransport.handlePostMessage(req, res);
+        } else if (url === "/ping") {
+          res.writeHead(200, { 'Content-Type': 'text/plain' });
+          res.end('pong');
         } else {
           res.writeHead(404);
           res.end("Not found");
         }
-      } else if (url === "/ping") {
-        res.writeHead(200, { 'Content-Type': 'text/plain' });
-        res.end('pong');
-      } else {
-        res.writeHead(404);
-        res.end("Not found");
+      } catch (error) {
+        console.error("Error handling request:", error);
+        if (!res.headersSent) {
+          res.writeHead(500);
+          res.end("Internal Server Error");
+        }
       }
     });
+
     httpServer.listen(port, () => {
       console.error(`Context7 Documentation MCP Server running on ${transportType.toUpperCase()} at http://localhost:${port}/mcp and legacy SSE at /sse`);
     });
   } else {
+    // Stdio transport - this is already stateless by nature
+    const server = createServerInstance();
     const transport = new StdioServerTransport();
     await server.connect(transport);
     console.error("Context7 Documentation MCP Server running on stdio");
