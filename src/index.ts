@@ -211,6 +211,9 @@ async function main() {
           res.writeHead(404);
           res.end("Not found");
         }
+      } else if (url === "/ping") {
+        res.writeHead(200, { 'Content-Type': 'text/plain' });
+        res.end('pong');
       } else {
         res.writeHead(404);
         res.end("Not found");
