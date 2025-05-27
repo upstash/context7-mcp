@@ -5,6 +5,10 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc && chmod 755 dist/index.js",
+    "start": "MCP_TRANSPORT=http node dist/index.js",
+    "start:http": "MCP_TRANSPORT=http node dist/index.js",
+    "start:sse": "MCP_TRANSPORT=sse node dist/index.js",
+    "start:stdio": "node dist/index.js",
     "format": "prettier --write .",
     "lint": "eslint \"**/*.{js,ts,tsx}\" --fix"
   },

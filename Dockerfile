@@ -25,7 +25,11 @@ COPY package.json ./
 # Install only production dependencies
 RUN npm install --production --ignore-scripts
 
-# Expose no ports (stdio only)
+# Set environment variable for HTTP mode
+ENV MCP_TRANSPORT=http
+
+# Expose port for HTTP mode
+EXPOSE 3000
 
 # Default command
 CMD ["node", "dist/index.js"]
