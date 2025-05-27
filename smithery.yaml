@@ -5,5 +5,5 @@ startCommand:
   configSchema:
     # JSON Schema defining the configuration options for the MCP.
     type: object
-    description: Configuration for Context7 SSE MCP server
+    description: No configuration required
   exampleConfig: {}
