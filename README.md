@@ -157,8 +157,8 @@ Add this to your VS Code MCP config file. See [VS Code MCP docs](https://code.vi
 #### VS Code Remote Server Connection
 
 ```json
-{
-  "mcpServers": {
+"mcp": {
+  "servers": {
     "context7": {
       "type": "http",
       "url": "https://mcp.context7.com/mcp"
@@ -170,9 +170,9 @@ Add this to your VS Code MCP config file. See [VS Code MCP docs](https://code.vi
 #### VS Code Local Server Connection
 
 ```json
-{
+"mcp": {
   "servers": {
-    "Context7": {
+    "context7": {
       "type": "stdio",
       "command": "npx",
       "args": ["-y", "@upstash/context7-mcp"]
