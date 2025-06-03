@@ -377,6 +377,39 @@ Once the MCP server is added, restart your editor. If you receive any errors, ch
 
 </details>
 
+<details>
+<summary><b>Install in Roo Code</b></summary>
+
+Add this to your Roo Code MCP configuration file. See [Roo Code MCP docs](https://docs.roocode.com/features/mcp/using-mcp-in-roo) for more info.
+
+#### Roo Code Remote Server Connection
+
+```json
+{
+  "mcpServers": {
+    "context7": {
+      "type": "http",
+      "url": "https://mcp.context7.com/mcp"
+    }
+  }
+}
+```
+
+#### Roo Code Local Server Connection
+
+```json
+{
+  "mcpServers": {
+    "context7": {
+      "command": "npx",
+      "args": ["-y", "@upstash/context7-mcp"]
+    }
+  }
+}
+```
+
+</details>
+
 ## 🔧 Environment Variables
 
 The Context7 MCP server supports the following environment variables:
