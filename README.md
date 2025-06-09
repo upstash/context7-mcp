@@ -425,6 +425,26 @@ Add this to your Roo Code MCP configuration file. See [Roo Code MCP docs](https:
 The Context7 MCP server supports the following environment variables:
 
 - `DEFAULT_MINIMUM_TOKENS`: Set the minimum token count for documentation retrieval (default: 10000)
+- `REPO_ACCEPT_LIST`: Comma-separated list of repository patterns to include (whitelist). Supports glob patterns with `*` and `?`
+- `REPO_REJECT_LIST`: Comma-separated list of repository patterns to exclude (blacklist). Supports glob patterns with `*` and `?`
+
+### Repository Filtering
+
+You can filter which repositories are included in search results using accept and reject lists:
+
+- **Accept List**: Only repositories matching these patterns will be included
+- **Reject List**: Repositories matching these patterns will be excluded
+- **Pattern Matching**: Supports glob-style patterns:
+  - `*` matches any characters
+  - `?` matches single character
+  - Patterns are case-insensitive
+
+Examples:
+
+- `github.com/vercel/next.js` - exact match
+- `github.com/vercel/*` - all Vercel repositories
+- `*.js` - all repositories ending with .js
+- `github.com/microsoft/*` - all Microsoft repositories
 
 Example configuration with environment variables:
 
@@ -435,7 +455,25 @@ Example configuration with environment variables:
       "command": "npx",
       "args": ["-y", "@upstash/context7-mcp"],
       "env": {
-        "DEFAULT_MINIMUM_TOKENS": "6000"
+        "DEFAULT_MINIMUM_TOKENS": "6000",
+        "REPO_ACCEPT_LIST": "github.com/vercel/next.js,github.com/facebook/react",
+        "REPO_REJECT_LIST": "*/legacy-*,*/deprecated-*"
+      }
+    }
+  }
+}
+```
+
+Or to only allow Next.js documentation:
+
+```json
+{
+  "mcpServers": {
+    "context7": {
+      "command": "npx",
+      "args": ["-y", "@upstash/context7-mcp"],
+      "env": {
+        "REPO_ACCEPT_LIST": "github.com/vercel/next.js"
       }
     }
   }

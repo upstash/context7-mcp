@@ -28,6 +28,17 @@ if (process.env.DEFAULT_MINIMUM_TOKENS) {
   }
 }
 
+// Log repository filtering configuration if present
+if (process.env.REPO_ACCEPT_LIST || process.env.REPO_REJECT_LIST) {
+  console.warn("Repository filtering enabled:");
+  if (process.env.REPO_ACCEPT_LIST) {
+    console.warn(`  Accept list: ${process.env.REPO_ACCEPT_LIST}`);
+  }
+  if (process.env.REPO_REJECT_LIST) {
+    console.warn(`  Reject list: ${process.env.REPO_REJECT_LIST}`);
+  }
+}
+
 // Store SSE transports by session ID
 const sseTransports: Record<string, SSEServerTransport> = {};
 
