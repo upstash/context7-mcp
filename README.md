@@ -539,11 +539,64 @@ bun run dist/index.js
 
 - `--transport <stdio|http|sse>` – Transport to use (`stdio` by default).
 - `--port <number>` – Port to listen on when using `http` or `sse` transport (default `3000`).
+- `--accept-list <repos...>` – Only include repositories matching these patterns (supports wildcards: `*` and `?`).
+- `--reject-list <repos...>` – Exclude repositories matching these patterns (supports wildcards: `*` and `?`).
 
-Example with http transport and port 8080:
+#### Examples
 
+Basic usage with http transport and port 8080:
 ```bash
 bun run dist/index.js --transport http --port 8080
+```
+
+Only include Next.js repository:
+```bash
+bun run dist/index.js --accept-list vercel/next.js
+```
+
+Include only repositories from Vercel and TanStack:
+```bash
+bun run dist/index.js --accept-list vercel/* tanstack/*
+```
+
+Exclude deprecated repositories:
+```bash
+bun run dist/index.js --reject-list */deprecated-*
+```
+
+Combine accept and reject lists:
+```bash
+bun run dist/index.js --accept-list vercel/* --reject-list */legacy-* --transport http
+```
+
+For JSON configuration files, use single-string format:
+```json
+{
+  "mcpServers": {
+    "context7": {
+      "command": "npx",
+      "args": [
+        "@upstash/context7-mcp",
+        "--accept-list vercel/next.js"
+      ]
+    }
+  }
+}
+```
+
+Multiple repositories in JSON configuration:
+```json
+{
+  "mcpServers": {
+    "context7": {
+      "command": "npx",
+      "args": [
+        "@upstash/context7-mcp",
+        "--accept-list vercel/* tanstack/*"
+      ]
+    }
+  }
+}
 ```
 
 <details>
