@@ -345,7 +345,7 @@ Once installed, Context7 will be immediately available in your Memex conversatio
 Create a Next.js project with Tailwind CSS. use context7
 ```
 
-*Memex is the first MCP client and MCP server builder — build anything in any stack, with just natural language, on your desktop. [Learn more at memex.tech](https://memex.tech)*
+*Memex is the first MCP client and MCP server builder — all-in-one, on your desktop. [Learn more at memex.tech](https://memex.tech)*
 
 </details>
 
