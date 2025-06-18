@@ -321,6 +321,35 @@ Once saved, enter in the chat `get-library-docs` followed by your Context7 docum
 </details>
 
 <details>
+<summary><b>Install in Memex</b></summary>
+
+**Memex** makes installing Context7 MCP server effortless with its natural language interface and built-in MCP Server Directory.
+
+### **Method 1: Natural Language Installation**
+
+1. Open Memex
+2. Enter the prompt: `Install context7 mcp server https://github.com/upstash/context7`
+3. Memex will automatically install and configure the Context7 MCP server
+
+### **Method 2: Server Directory Installation** 
+
+1. Open Memex
+2. Click on Settings ⚙️ → MCP → Server Directory  
+3. Find and select **Context7** from the directory
+4. Click **Install**
+
+Once installed, Context7 will be immediately available in your Memex conversations. Simply add `use context7` to any prompt to access up-to-date documentation and code examples.
+
+**Example usage in Memex:**
+```
+Create a Next.js project with Tailwind CSS. use context7
+```
+
+*Memex is the first MCP client and MCP server builder — build anything in any stack, with just natural language, on your desktop. [Learn more at memex.tech](https://memex.tech)*
+
+</details>
+
+<details>
 <summary><b>Using Docker</b></summary>
 
 If you prefer to run the MCP server in a Docker container:
