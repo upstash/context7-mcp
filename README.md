@@ -307,6 +307,24 @@ Add this to your Claude Desktop `claude_desktop_config.json` file. See [Claude D
 </details>
 
 <details>
+<summary><b>Install in Gemini CLI</b></summary>
+
+Add this to your Gemini CLI `settings.json` file. This can be a project-specific file (`.gemini/settings.json`) or a global user file (`~/.gemini/settings.json`). See the Gemini CLI configuration documentation for more info.
+
+```json
+{
+  "mcpServers": {
+    "context7": {
+      "command": "npx",
+      "args": ["-y", " @upstash/context7-mcp"]
+    }
+  }
+}
+```
+
+</details>
+
+<details>
 <summary>
 <b>Install in Cline</b>
 </summary>
