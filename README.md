@@ -672,6 +672,40 @@ See [Warp Model Context Protocol Documentation](https://docs.warp.dev/knowledge-
 
 </details>
 
+<details>
+<summary><b>Install in Opencode</b></summary>
+
+Add this to your Opencode configuration file. See [Opencode MCP docs](https://opencode.ai/docs/mcp-servers) docs for more info.
+
+#### Opencode Remote Server Connection
+
+```json
+"mcp": {
+  "remotemcp": {
+    "type": "remote",
+    "url": "https://mcp.context7.com/mcp",
+    "enabled": true
+  }
+}
+```
+
+#### Opencode Local Server Connection
+
+```json
+
+{
+  "mcp": {
+    "localmcp": {
+      "type": "local",
+      "command": ["npx", "-y", "@upstash/context7-mcp"],
+      "enabled": true
+    }
+  }
+}
+```
+
+</details>
+
 ## 🔨 Available Tools
 
 Context7 MCP provides the following tools that LLMs can use:
