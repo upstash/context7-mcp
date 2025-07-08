@@ -1,18 +1,25 @@
 import { SearchResponse } from "./types.js";
 
-const CONTEXT7_API_BASE_URL = "https://context7.com/api";
+const CONTEXT7_API_BASE_URL = "http://localhost:3000/api";
 const DEFAULT_TYPE = "txt";
 
 /**
  * Searches for libraries matching the given query
  * @param query The search query
+ * @param apiKey Optional API key for authentication
  * @returns Search results or null if the request fails
  */
-export async function searchLibraries(query: string): Promise<SearchResponse> {
+export async function searchLibraries(query: string, apiKey?: string): Promise<SearchResponse> {
   try {
     const url = new URL(`${CONTEXT7_API_BASE_URL}/v1/search`);
     url.searchParams.set("query", query);
-    const response = await fetch(url);
+
+    const headers: Record<string, string> = {};
+    if (apiKey) {
+      headers["Authorization"] = `Bearer ${apiKey}`;
+    }
+
+    const response = await fetch(url, { headers });
     if (!response.ok) {
       const errorCode = response.status;
       if (errorCode === 429) {
@@ -39,6 +46,7 @@ export async function searchLibraries(query: string): Promise<SearchResponse> {
  * Fetches documentation context for a specific library
  * @param libraryId The library ID to fetch documentation for
  * @param options Options for the request
+ * @param apiKey Optional API key for authentication
  * @returns The documentation text or null if the request fails
  */
 export async function fetchLibraryDocumentation(
@@ -46,7 +54,8 @@ export async function fetchLibraryDocumentation(
   options: {
     tokens?: number;
     topic?: string;
-  } = {}
+  } = {},
+  apiKey?: string
 ): Promise<string | null> {
   try {
     if (libraryId.startsWith("/")) {
@@ -56,11 +65,15 @@ export async function fetchLibraryDocumentation(
     if (options.tokens) url.searchParams.set("tokens", options.tokens.toString());
     if (options.topic) url.searchParams.set("topic", options.topic);
     url.searchParams.set("type", DEFAULT_TYPE);
-    const response = await fetch(url, {
-      headers: {
-        "X-Context7-Source": "mcp-server",
-      },
-    });
+
+    const headers: Record<string, string> = {
+      "X-Context7-Source": "mcp-server",
+    };
+    if (apiKey) {
+      headers["Authorization"] = `Bearer ${apiKey}`;
+    }
+
+    const response = await fetch(url, { headers });
     if (!response.ok) {
       const errorCode = response.status;
       if (errorCode === 429) {
