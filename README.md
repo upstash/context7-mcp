@@ -59,6 +59,17 @@ You can find your Smithery key in the [Smithery.ai webpage](https://smithery.ai/
 </details>
 
 <details>
+<summary><b>Installing via MCP Linker</b></summary>
+
+#### Add to local mcp clients
+
+Built-in support for Claude Code, Desktop, Cursor, VS Code, Cline, Roo Code, Windsurf, and custom mcp.json.
+
+[![mcp-linker-add](https://img.shields.io/badge/mcp--linker-add-blue?logo=link&style=for-the-badge)](https://www.mcp-linker.store/install-app?name=context7&autoSubmit=true&config=eyJjb250ZXh0NyI6eyJjb21tYW5kIjoibnB4IiwiYXJncyI6WyIteSIsIkB1cHN0YXNoL2NvbnRleHQ3LW1jcCJdfX0=)
+
+</details>
+
+<details>
 <summary><b>Install in Cursor</b></summary>
 
 Go to: `Settings` -> `Cursor Settings` -> `MCP` -> `Add new global MCP server`
