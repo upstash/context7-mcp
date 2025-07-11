@@ -321,6 +321,30 @@ claude mcp add context7 -- npx -y @upstash/context7-mcp
 </details>
 
 <details>
+<summary><b>Copilot Coding Agent へのインストール</b></summary>
+
+以下の設定を Copilot Coding Agent の `mcp` セクション（Repository->Settings->Copilot->Coding agent->MCP configuration）に追加してください：
+
+```json
+{
+  "mcpServers": {
+    "context7": {
+      "type": "http",
+      "url": "https://mcp.context7.com/mcp",
+      "tools": [
+        "get-library-docs",
+        "resolve-library-id"
+      ]
+    }
+  }
+}
+```
+
+詳細は [公式 GitHub ドキュメント](https://docs.github.com/en/enterprise-cloud@latest/copilot/how-tos/agents/copilot-coding-agent/extending-copilot-coding-agent-with-mcp) をご覧ください。
+
+</details>
+
+<details>
 <summary><b>Docker を使用</b></summary>
 
 MCP サーバーを Docker コンテナで実行したい場合：

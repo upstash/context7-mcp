@@ -400,6 +400,30 @@ Claude Desktop의 `claude_desktop_config.json` 파일에 다음을 추가하세�
 </details>
 
 <details>
+<summary><b>Copilot Coding Agent 설치</b></summary>
+
+아래 설정을 Copilot Coding Agent의 `mcp` 섹션(Repository->Settings->Copilot->Coding agent->MCP configuration)에 추가하세요:
+
+```json
+{
+  "mcpServers": {
+    "context7": {
+      "type": "http",
+      "url": "https://mcp.context7.com/mcp",
+      "tools": [
+        "get-library-docs",
+        "resolve-library-id"
+      ]
+    }
+  }
+}
+```
+
+자세한 내용은 [공식 GitHub 문서](https://docs.github.com/en/enterprise-cloud@latest/copilot/how-tos/agents/copilot-coding-agent/extending-copilot-coding-agent-with-mcp)를 참고하세요.
+
+</details>
+
+<details>
 <summary><b>Docker 사용하기</b></summary>
 
 MCP 서버를 Docker 컨테이너에서 실행하려면:

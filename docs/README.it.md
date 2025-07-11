@@ -173,6 +173,27 @@ Aggiungi questo al tuo file `claude_desktop_config.json` di Claude Desktop. Vedi
 }
 ```
 
+### Installazione in Copilot Coding Agent
+
+Aggiungi la seguente configurazione alla sezione `mcp` del file di configurazione di Copilot Coding Agent (Repository->Settings->Copilot->Coding agent->MCP configuration):
+
+```json
+{
+  "mcpServers": {
+    "context7": {
+      "type": "http",
+      "url": "https://mcp.context7.com/mcp",
+      "tools": [
+        "get-library-docs",
+        "resolve-library-id"
+      ]
+    }
+  }
+}
+```
+
+Per maggiori informazioni, consulta la [documentazione ufficiale GitHub](https://docs.github.com/en/enterprise-cloud@latest/copilot/how-tos/agents/copilot-coding-agent/extending-copilot-coding-agent-with-mcp).
+
 ### Utilizzo di Docker
 
 Se preferisci eseguire il server MCP in un contenitore Docker:

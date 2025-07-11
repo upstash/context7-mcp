@@ -153,6 +153,28 @@ Añade esto a tu archivo `claude_desktop_config.json` de Claude Desktop. Consult
 }
 ```
 
+### Instalar en Copilot Coding Agent
+
+Agrega la siguiente configuración a la sección `mcp` de tu archivo de configuración de Copilot Coding Agent (Repository->Settings->Copilot->Coding agent->MCP configuration):
+
+```json
+{
+  "mcpServers": {
+    "context7": {
+      "type": "http",
+      "url": "https://mcp.context7.com/mcp",
+      "tools": [
+        "get-library-docs",
+        "resolve-library-id"
+      ]
+    }
+  }
+}
+```
+
+Para más información, consulta la [documentación oficial de GitHub](https://docs.github.com/en/enterprise-cloud@latest/copilot/how-tos/agents/copilot-coding-agent/extending-copilot-coding-agent-with-mcp).
+
+
 ### Herramientas Disponibles
 
 - `resolve-library-id`: Resuelve un nombre de una biblioteca general en un ID de biblioteca compatible con Context7.
