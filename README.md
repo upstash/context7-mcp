@@ -311,6 +311,18 @@ See [Gemini CLI Configuration](https://github.com/google-gemini/gemini-cli/blob/
 {
   "mcpServers": {
     "context7": {
+      "httpUrl": "https://mcp.context7.com/mcp"
+    }
+  }
+}
+```
+
+Or, for a local server:
+
+```json
+{
+  "mcpServers": {
+    "context7": {
       "command": "npx",
       "args": ["-y", "@upstash/context7-mcp"]
     }
