@@ -34,6 +34,7 @@ ENV PORT=$APP_PORT
 EXPOSE $APP_PORT
 
 # Add healthcheck
+HEALTHCHECK CMD sh -c "curl -sf http://localhost:${PORT:-3000}/ping || exit 1"
 HEALTHCHECK CMD curl -sf http://localhost:$PORT/ping || exit 1
 
 # Default command - uses environment variable PORT first, then CLI flag, then default
