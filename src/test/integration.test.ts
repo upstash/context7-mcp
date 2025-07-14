@@ -49,7 +49,7 @@ async function testServerStartup() {
     
     // Check if the expected log message appears
     const expectedLogMessage = `Context7 Documentation MCP Server running on HTTP at http://${test.expectedHost}:${test.expectedPort}/mcp`;
-    
+
     if (stderrOutput.includes(expectedLogMessage)) {
       console.log(`✅ ${test.name} - Log message correct`);
     } else {
@@ -57,7 +57,33 @@ async function testServerStartup() {
       console.log(`   Expected: ${expectedLogMessage}`);
       console.log(`   Got: ${stderrOutput.trim()}`);
     }
-    
+
+    // Check server responsiveness by sending a GET request to /ping
+    const http = await import("http");
+    const pingUrl = `http://${test.expectedHost}:${test.expectedPort}/ping`;
+
+    await new Promise<void>((resolve) => {
+      const req = http.request(pingUrl, (res: any) => {
+        let data = "";
+        res.on("data", (chunk: any) => {
+          data += chunk;
+        });
+        res.on("end", () => {
+          if (res.statusCode === 200) {
+            console.log(`✅ ${test.name} - Server responded to /ping`);
+          } else {
+            console.log(`❌ ${test.name} - Server /ping responded with status ${res.statusCode}`);
+          }
+          resolve();
+        });
+      });
+      req.on("error", (err: any) => {
+        console.log(`❌ ${test.name} - Server did not respond to /ping: ${err.message}`);
+        resolve();
+      });
+      req.end();
+    });
+
     // Clean up
     child.kill();
     await setTimeout(100);
