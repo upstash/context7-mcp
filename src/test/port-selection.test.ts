@@ -16,7 +16,7 @@ function assert(condition: boolean, message: string) {
   }
 }
 
-function assertEquals(actual: any, expected: any, message: string) {
+function assertEquals(actual: unknown, expected: unknown, message: string) {
   assert(actual === expected, `${message} (expected ${expected}, got ${actual})`);
 }
 
@@ -87,18 +87,10 @@ assertEquals(
 );
 
 // Test 10: SERVER_HOST constant
-assertEquals(
-  SERVER_HOST,
-  "0.0.0.0",
-  "SERVER_HOST should be set to 0.0.0.0"
-);
+assertEquals(SERVER_HOST, "0.0.0.0", "SERVER_HOST should be set to 0.0.0.0");
 
 // Test 11: Zero port from environment (edge case)
-assertEquals(
-  getServerPort("0", "9000", 3000),
-  0,
-  "Zero port from environment should be accepted"
-);
+assertEquals(getServerPort("0", "9000", 3000), 0, "Zero port from environment should be accepted");
 
 // Test 12: Negative port from environment falls back to CLI
 assertEquals(
