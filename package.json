@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "MCP server for Context7",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "node dist/test/port-selection.test.js && node dist/test/integration.test.js",
     "build": "tsc && chmod 755 dist/index.js",
     "format": "prettier --write .",
     "lint": "eslint \"**/*.{js,ts,tsx}\" --fix",
@@ -12,7 +12,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/upstash/context7.git"
+    "url": "git+https://github.com/JoshCrosby/context7.git"
   },
   "keywords": [
     "modelcontextprotocol",
@@ -29,9 +29,9 @@
     "dist"
   ],
   "bugs": {
-    "url": "https://github.com/upstash/context7/issues"
+    "url": "https://github.com/JoshCrosby/context7/issues"
   },
-  "homepage": "https://github.com/upstash/context7#readme",
+  "homepage": "https://github.com/JoshCrosby/context7#readme",
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.12.0",
     "commander": "^14.0.0",

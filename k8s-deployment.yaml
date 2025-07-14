@@ -1,0 +1,99 @@
+# Kubernetes Deployment Example for Context7 MCP Server
+# This example demonstrates the new host binding behavior (0.0.0.0)
+# and PORT environment variable configuration
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: context7-mcp
+  labels:
+    app: context7-mcp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: context7-mcp
+  template:
+    metadata:
+      labels:
+        app: context7-mcp
+    spec:
+      containers:
+      - name: context7-mcp
+        image: context7-mcp:latest
+        ports:
+        - containerPort: 3000
+          protocol: TCP
+        env:
+        - name: PORT
+          value: "3000"
+        # Server now binds to 0.0.0.0 by default, making it accessible
+        # from outside the container when port-forwarded or exposed via Service
+        command: ["node", "dist/index.js"]
+        args: ["--transport", "http"]
+        livenessProbe:
+          httpGet:
+            path: /ping
+            port: 3000
+          initialDelaySeconds: 10
+          periodSeconds: 30
+        readinessProbe:
+          httpGet:
+            path: /ping
+            port: 3000
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "200m"
+
+---
+# Service to expose the deployment
+apiVersion: v1
+kind: Service
+metadata:
+  name: context7-mcp-service
+spec:
+  selector:
+    app: context7-mcp
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 3000
+  type: ClusterIP
+
+---
+# Optional: Ingress for external access
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: context7-mcp-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+  - host: context7-mcp.example.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: context7-mcp-service
+            port:
+              number: 80
+
+---
+# ConfigMap for advanced configuration
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: context7-mcp-config
+data:
+  PORT: "3000"
+  # The server binds to 0.0.0.0 by default, ensuring compatibility
+  # with Kubernetes networking and service discovery

@@ -1,0 +1,52 @@
+name: Container Test
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  container-test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+    
+    - name: Run container test
+      run: |
+        # Build the Docker image
+        docker build -t context7-test .
+        
+        # Start the container
+        docker run -d -p 3000:3000 --name c7 context7-test
+        
+        # Test the ping endpoint
+        curl --retry 6 --retry-connrefused http://localhost:3000/ping
+        
+        # Check if response is 'pong'
+        response=$(curl --retry 6 --retry-connrefused -s http://localhost:3000/ping)
+        if [ "$response" != "pong" ]; then
+          echo "❌ FAILURE: Expected 'pong', got '$response'"
+          exit 1
+        fi
+        
+        echo "✅ SUCCESS: Ping endpoint returned 'pong'"
+        
+        # Optional: Check health status
+        health_status=$(docker inspect --format='{{.State.Health.Status}}' c7 2>/dev/null || echo "none")
+        echo "Health status: $health_status"
+        
+        # Show container logs for debugging
+        echo "Container logs:"
+        docker logs c7
+        
+        # Cleanup
+        docker stop c7
+        docker rm c7
+        
+        echo "🎉 Container test completed successfully!"

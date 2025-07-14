@@ -1,0 +1,14 @@
+services:
+  context7-mcp:
+    build: .
+    ports:
+      - "3000:3000"  # Server now binds to 0.0.0.0 by default
+    environment:
+      - PORT=3000     # Port can be configured via environment variable
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s

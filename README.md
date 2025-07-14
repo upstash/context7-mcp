@@ -1,6 +1,6 @@
 # Context7 MCP - Up-to-date Code Docs For Any Prompt
 
-[![Website](https://img.shields.io/badge/Website-context7.com-blue)](https://context7.com) [![smithery badge](https://smithery.ai/badge/@upstash/context7-mcp)](https://smithery.ai/server/@upstash/context7-mcp) [<img alt="Install in VS Code (npx)" src="https://img.shields.io/badge/VS_Code-VS_Code?style=flat-square&label=Install%20Context7%20MCP&color=0098FF">](https://insiders.vscode.dev/redirect?url=vscode%3Amcp%2Finstall%3F%7B%22name%22%3A%22context7%22%2C%22command%22%3A%22npx%22%2C%22args%22%3A%5B%22-y%22%2C%22%40upstash%2Fcontext7-mcp%40latest%22%5D%7D)
+[![Website](https://img.shields.io/badge/Website-context7.com-blue)](https://context7.com) [![GitHub](https://img.shields.io/badge/GitHub-JoshCrosby%2Fcontext7-blue)](https://github.com/JoshCrosby/context7) [<img alt="Install in VS Code (npx)" src="https://img.shields.io/badge/VS_Code-VS_Code?style=flat-square&label=Install%20Context7%20MCP&color=0098FF">](https://insiders.vscode.dev/redirect?url=vscode%3Amcp%2Finstall%3F%7B%22name%22%3A%22context7%22%2C%22command%22%3A%22npx%22%2C%22args%22%3A%5B%22-y%22%2C%22%40upstash%2Fcontext7-mcp%40latest%22%5D%7D)
 
 [![繁體中文](https://img.shields.io/badge/docs-繁體中文-yellow)](./docs/README.zh-TW.md) [![简体中文](https://img.shields.io/badge/docs-简体中文-yellow)](./docs/README.zh-CN.md) [![日本語](https://img.shields.io/badge/docs-日本語-b7003a)](./docs/README.ja.md) [![한국어 문서](https://img.shields.io/badge/docs-한국어-green)](./docs/README.ko.md) [![Documentación en Español](https://img.shields.io/badge/docs-Español-orange)](./docs/README.es.md) [![Documentation en Français](https://img.shields.io/badge/docs-Français-blue)](./docs/README.fr.md) [![Documentação em Português (Brasil)](<https://img.shields.io/badge/docs-Português%20(Brasil)-purple>)](./docs/README.pt-BR.md) [![Documentazione in italiano](https://img.shields.io/badge/docs-Italian-red)](./docs/README.it.md) [![Dokumentasi Bahasa Indonesia](https://img.shields.io/badge/docs-Bahasa%20Indonesia-pink)](./docs/README.id-ID.md) [![Dokumentation auf Deutsch](https://img.shields.io/badge/docs-Deutsch-darkgreen)](./docs/README.de.md) [![Документация на русском языке](https://img.shields.io/badge/docs-Русский-darkblue)](./docs/README.ru.md) [![Türkçe Doküman](https://img.shields.io/badge/docs-Türkçe-blue)](./docs/README.tr.md) [![Arabic Documentation](https://img.shields.io/badge/docs-Arabic-white)](./docs/README.ar.md)
 
@@ -419,8 +419,8 @@ If you prefer to run the MCP server in a Docker container:
    # Install the latest version globally
    RUN npm install -g @upstash/context7-mcp
 
-   # Expose default port if needed (optional, depends on MCP client interaction)
-   # EXPOSE 3000
+   # Expose default port (server now binds to 0.0.0.0)
+   EXPOSE 3000
 
    # Default command to run the server
    CMD ["context7-mcp"]
@@ -433,6 +433,18 @@ If you prefer to run the MCP server in a Docker container:
    ```bash
    docker build -t context7-mcp .
    ```
+
+   **Custom Port Configuration:**
+   
+   You can override the default port (3000) at build time using Docker build arguments:
+   
+   ```bash
+   docker build --build-arg APP_PORT=8080 -t context7-mcp .
+   ```
+   
+   This allows you to customize the port that the container exposes without modifying the Dockerfile.
+   
+   **🔧 Host Binding:** The server now binds to **0.0.0.0** by default, making it accessible from outside the container when ports are properly mapped.
 
 2. **Configure Your MCP Client:**
 
@@ -456,6 +468,10 @@ If you prefer to run the MCP server in a Docker container:
    ```
 
    _Note: This is an example configuration. Please refer to the specific examples for your MCP client (like Cursor, VS Code, etc.) earlier in this README to adapt the structure (e.g., `mcpServers` vs `servers`). Also, ensure the image name in `args` matches the tag used during the `docker build` command._
+
+3. **Kubernetes Deployment Example:**
+
+   For Kubernetes deployments, see the [`k8s-deployment.yaml`](./k8s-deployment.yaml) example which demonstrates the new host binding behavior and shows how to configure the server using environment variables.
 
 </details>
 
@@ -766,10 +782,23 @@ bun run dist/index.js
 - `--transport <stdio|http|sse>` – Transport to use (`stdio` by default).
 - `--port <number>` – Port to listen on when using `http` or `sse` transport (default `3000`).
 
+**🔧 Host Binding & Port Configuration:**
+- **Host binding:** The server now binds to **0.0.0.0** by default, making it accessible from any network interface.
+- **Port priority:** Port selection follows this order:
+  1. `PORT` environment variable (highest priority)
+  2. `--port` CLI flag
+  3. Default port 3000
+
 Example with http transport and port 8080:
 
 ```bash
 bun run dist/index.js --transport http --port 8080
+```
+
+Example with PORT environment variable:
+
+```bash
+PORT=8080 bun run dist/index.js --transport http
 ```
 
 <details>
@@ -890,7 +919,7 @@ Stay updated and join our community:
 
 ## ⭐ Star History
 
-[![Star History Chart](https://api.star-history.com/svg?repos=upstash/context7&type=Date)](https://www.star-history.com/#upstash/context7&Date)
+[![Star History Chart](https://api.star-history.com/svg?repos=JoshCrosby/context7&type=Date)](https://www.star-history.com/#JoshCrosby/context7&Date)
 
 ## 📄 License
 

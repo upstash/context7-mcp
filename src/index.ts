@@ -10,6 +10,7 @@ import { createServer } from "http";
 import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
 import { SSEServerTransport } from "@modelcontextprotocol/sdk/server/sse.js";
 import { Command } from "commander";
+import { getServerPort, SERVER_HOST } from "./lib/port-selection.js";
 
 const DEFAULT_MINIMUM_TOKENS = 10000;
 
@@ -37,11 +38,8 @@ if (!allowedTransports.includes(cliOptions.transport)) {
 // Transport configuration
 const TRANSPORT_TYPE = (cliOptions.transport || "stdio") as "stdio" | "http" | "sse";
 
-// HTTP/SSE port configuration
-const CLI_PORT = (() => {
-  const parsed = parseInt(cliOptions.port, 10);
-  return isNaN(parsed) ? undefined : parsed;
-})();
+// HTTP/SSE port configuration - prioritize env.PORT, then CLI flag, then default
+const SERVER_PORT = getServerPort(process.env.PORT, cliOptions.port, 3000);
 
 // Store SSE transports by session ID
 const sseTransports: Record<string, SSEServerTransport> = {};
@@ -185,8 +183,8 @@ async function main() {
   const transportType = TRANSPORT_TYPE;
 
   if (transportType === "http" || transportType === "sse") {
-    // Get initial port from environment or use default
-    const initialPort = CLI_PORT ?? 3000;
+    // Get initial port using priority order: env.PORT -> CLI flag -> default
+    const initialPort = SERVER_PORT;
     // Keep track of which port we end up using
     let actualPort = initialPort;
     const httpServer = createServer(async (req, res) => {
@@ -274,10 +272,10 @@ async function main() {
         }
       });
 
-      httpServer.listen(port, () => {
+      httpServer.listen(port, SERVER_HOST, () => {
         actualPort = port;
         console.error(
-          `Context7 Documentation MCP Server running on ${transportType.toUpperCase()} at http://localhost:${actualPort}/mcp and legacy SSE at /sse`
+          `Context7 Documentation MCP Server running on ${transportType.toUpperCase()} at http://${SERVER_HOST}:${actualPort}/mcp and legacy SSE at /sse`
         );
       });
     };
