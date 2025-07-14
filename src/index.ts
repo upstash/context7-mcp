@@ -38,7 +38,18 @@ if (!allowedTransports.includes(cliOptions.transport)) {
 // Transport configuration
 const TRANSPORT_TYPE = (cliOptions.transport || "stdio") as "stdio" | "http" | "sse";
 
-// HTTP/SSE port configuration - prioritize env.PORT, then CLI flag, then default
+/**
+ * HTTP/SSE port configuration - prioritize env.PORT, then CLI flag, then default.
+ * If the CLI flag is provided but invalid, log a warning.
+ */
+if (
+  typeof cliOptions.port !== "undefined" &&
+  (isNaN(Number(cliOptions.port)) || !Number.isFinite(Number(cliOptions.port)))
+) {
+  console.warn(
+    `[WARN] CLI flag '--port=${cliOptions.port}' is not a valid number and will be ignored.`
+  );
+}
 const SERVER_PORT = getServerPort(process.env.PORT, cliOptions.port, 3000);
 
 // Store SSE transports by session ID
