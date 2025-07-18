@@ -44,6 +44,7 @@ Check out our [project addition guide](./docs/adding-projects.md) to learn how t
 
 - Node.js >= v18.0.0
 - Cursor, Windsurf, Claude Desktop or another MCP Client
+- Context7 API Key (Optional for higher rate limits) (Get yours by creating an account at [context7.com/console](https://context7.com/console))
 
 <details>
 <summary><b>Installing via Smithery</b></summary>
@@ -75,7 +76,10 @@ Pasting the following configuration into your Cursor `~/.cursor/mcp.json` file i
 {
   "mcpServers": {
     "context7": {
-      "url": "https://mcp.context7.com/mcp"
+      "url": "https://mcp.context7.com/mcp",
+      "headers": {
+        "CONTEXT7_API_KEY": "your_api_key"
+      }
     }
   }
 }
@@ -90,7 +94,7 @@ Pasting the following configuration into your Cursor `~/.cursor/mcp.json` file i
   "mcpServers": {
     "context7": {
       "command": "npx",
-      "args": ["-y", "@upstash/context7-mcp"]
+      "args": ["-y", "@upstash/context7-mcp", "--api-key", "your_api_key"]
     }
   }
 }
@@ -106,7 +110,7 @@ Pasting the following configuration into your Cursor `~/.cursor/mcp.json` file i
   "mcpServers": {
     "context7": {
       "command": "bunx",
-      "args": ["-y", "@upstash/context7-mcp"]
+      "args": ["-y", "@upstash/context7-mcp", "--api-key", "your_api_key"]
     }
   }
 }
@@ -124,7 +128,12 @@ Pasting the following configuration into your Cursor `~/.cursor/mcp.json` file i
   "mcpServers": {
     "context7": {
       "command": "deno",
-      "args": ["run", "--allow-env=NO_DEPRECATION,TRACE_DEPRECATION", "--allow-net", "npm:@upstash/context7-mcp"]
+      "args": [
+        "run",
+        "--allow-env=NO_DEPRECATION,TRACE_DEPRECATION",
+        "--allow-net",
+        "npm:@upstash/context7-mcp"
+      ]
     }
   }
 }
@@ -158,7 +167,7 @@ Add this to your Windsurf MCP config file. See [Windsurf MCP docs](https://docs.
   "mcpServers": {
     "context7": {
       "command": "npx",
-      "args": ["-y", "@upstash/context7-mcp"]
+      "args": ["-y", "@upstash/context7-mcp", "--api-key", "your_api_key"]
     }
   }
 }
@@ -231,7 +240,7 @@ Add this to your VS Code MCP config file. See [VS Code MCP docs](https://code.vi
     "context7": {
       "type": "stdio",
       "command": "npx",
-      "args": ["-y", "@upstash/context7-mcp"]
+      "args": ["-y", "@upstash/context7-mcp", "--api-key", "your_api_key"]
     }
   }
 }
@@ -268,7 +277,7 @@ Or, for a local server:
       "context7": {
         "type": "stdio",
         "command": "npx",
-        "args": ["-y", "@upstash/context7-mcp"]
+        "args": ["-y", "@upstash/context7-mcp", "--api-key", "your_api_key"]
       }
     }
   }
@@ -276,6 +285,7 @@ Or, for a local server:
 ```
 
 For more information and troubleshooting, refer to the [Visual Studio MCP Servers documentation](https://learn.microsoft.com/visualstudio/ide/mcp-servers?view=vs-2022).
+
 </details>
 
 <details>
@@ -289,7 +299,7 @@ It can be installed via [Zed Extensions](https://zed.dev/extensions?query=Contex
     "Context7": {
       "command": {
         "path": "npx",
-        "args": ["-y", "@upstash/context7-mcp"]
+        "args": ["-y", "@upstash/context7-mcp", "--api-key", "your_api_key"]
       },
       "settings": {}
     }
@@ -342,19 +352,19 @@ Run this command. See [Claude Code MCP docs](https://docs.anthropic.com/en/docs/
 #### Claude Code Remote Server Connection
 
 ```sh
-claude mcp add --transport http context7 https://mcp.context7.com/mcp
+claude mcp add --transport http context7 https://mcp.context7.com/mcp --header "Context7-API-Key: your-key"
 ```
 
 Or using SSE transport:
 
 ```sh
-claude mcp add --transport sse context7 https://mcp.context7.com/sse
+claude mcp add --transport sse context7 https://mcp.context7.com/sse --header "Context7-API-Key: your-key"
 ```
 
 #### Claude Code Local Server Connection
 
 ```sh
-claude mcp add context7 -- npx -y @upstash/context7-mcp
+claude mcp add context7 -- npx -y @upstash/context7-mcp --api-key your-key
 ```
 
 </details>
@@ -385,9 +395,9 @@ Add this to your Claude Desktop `claude_desktop_config.json` file. See [Claude D
 You can easily install Context7 through the [Cline MCP Server Marketplace](https://cline.bot/mcp-marketplace) by following these instructions:
 
 1. Open **Cline**.
-1. Click the hamburger menu icon (☰) to enter the **MCP Servers** section.
-2. Use the search bar within the **Marketplace** tab to find *Context7*.
-3. Click the **Install** button.
+2. Click the hamburger menu icon (☰) to enter the **MCP Servers** section.
+3. Use the search bar within the **Marketplace** tab to find _Context7_.
+4. Click the **Install** button.
 
 </details>
 
@@ -581,11 +591,8 @@ To configure Context7 MCP in Zencoder, follow these steps:
 
 ```json
 {
-    "command": "npx",
-    "args": [
-        "-y",
-        "@upstash/context7-mcp@latest"
-    ]
+  "command": "npx",
+  "args": ["-y", "@upstash/context7-mcp@latest"]
 }
 ```
 
@@ -608,6 +615,7 @@ Add this to your Amazon Q Developer CLI configuration file. See [Amazon Q Develo
   }
 }
 ```
+
 </details>
 
 <details>
@@ -629,6 +637,7 @@ See [Qodo Gen docs](https://docs.qodo.ai/qodo-documentation/qodo-gen/qodo-gen-ch
   }
 }
 ```
+
 </details>
 
 <details>
@@ -670,10 +679,7 @@ See [Warp Model Context Protocol Documentation](https://docs.warp.dev/knowledge-
 {
   "Context7": {
     "command": "npx",
-    "args": [
-      "-y",
-      "@upstash/context7-mcp"
-    ],
+    "args": ["-y", "@upstash/context7-mcp"],
     "env": {},
     "working_directory": null,
     "start_on_launch": true
@@ -849,13 +855,14 @@ bun run dist/index.js
 
 `context7-mcp` accepts the following CLI flags:
 
-- `--transport <stdio|http|sse>` – Transport to use (`stdio` by default).
-- `--port <number>` – Port to listen on when using `http` or `sse` transport (default `3000`).
+- `--transport <stdio|http>` – Transport to use (`stdio` by default). Note that HTTP transport automatically provides both HTTP and SSE endpoints.
+- `--port <number>` – Port to listen on when using `http` transport (default `3000`).
+- `--api-key <key>` – API key for authentication. You can get your API key by creating an account at [context7.com/console](https://context7.com/console).
 
 Example with http transport and port 8080:
 
 ```bash
-bun run dist/index.js --transport http --port 8080
+bun run dist/index.js --transport http --port 8080 --api-key your_api_key
 ```
 
 <details>
@@ -866,7 +873,7 @@ bun run dist/index.js --transport http --port 8080
   "mcpServers": {
     "context7": {
       "command": "npx",
-      "args": ["tsx", "/path/to/folder/context7-mcp/src/index.ts"]
+      "args": ["tsx", "/path/to/folder/context7-mcp/src/index.ts", "--api-key", "your_api_key"]
     }
   }
 }
