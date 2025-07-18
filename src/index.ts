@@ -5,7 +5,7 @@ import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
 import { z } from "zod";
 import { searchLibraries, fetchLibraryDocumentation } from "./lib/api.js";
 import { formatSearchResults } from "./lib/utils.js";
-import { SearchResponse } from "./lib/types.js";
+import { SearchResponse, SearchResult } from "./lib/types.js";
 import { createServer } from "http";
 import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
 import { SSEServerTransport } from "@modelcontextprotocol/sdk/server/sse.js";
@@ -13,16 +13,70 @@ import { Command } from "commander";
 
 const DEFAULT_MINIMUM_TOKENS = 10000;
 
-// Parse CLI arguments using commander
-const program = new Command()
-  .option("--transport <stdio|http|sse>", "transport type", "stdio")
-  .option("--port <number>", "port for HTTP/SSE transport", "3000")
-  .allowUnknownOption() // let MCP Inspector / other wrappers pass through extra flags
-  .parse(process.argv);
-
-const cliOptions = program.opts<{
+// Parse CLI arguments using commander with better MCP compatibility
+let cliOptions: {
   transport: string;
   port: string;
+  acceptList?: string[];
+  rejectList?: string[];
+} = {
+  transport: "stdio",
+  port: "3000",
+};
+
+// Pre-process arguments to handle single-string format like "--accept-list vercel/next.js"
+const preprocessedArgs: string[] = [];
+const originalArgs = process.argv.slice(2);
+
+for (let i = 0; i < originalArgs.length; i++) {
+  const arg = originalArgs[i];
+
+  // Handle single-string arguments like "--accept-list vercel/next.js"
+  if (arg.startsWith("--accept-list ") && arg.length > "--accept-list ".length) {
+    const repos = arg.substring("--accept-list ".length).split(/\s+/);
+    preprocessedArgs.push("--accept-list");
+    preprocessedArgs.push(...repos);
+  } else if (arg.startsWith("--reject-list ") && arg.length > "--reject-list ".length) {
+    const repos = arg.substring("--reject-list ".length).split(/\s+/);
+    preprocessedArgs.push("--reject-list");
+    preprocessedArgs.push(...repos);
+  } else {
+    preprocessedArgs.push(arg);
+  }
+}
+
+// Update process.argv with preprocessed arguments
+const modifiedArgv = [process.argv[0], process.argv[1], ...preprocessedArgs];
+
+const program = new Command()
+  .name("context7-mcp")
+  .description(
+    "Context7 MCP Server - Retrieves up-to-date documentation and code examples for any library"
+  )
+  .version("1.0.13")
+  .option("--transport <stdio|http|sse>", "transport type", "stdio")
+  .option("--port <number>", "port for HTTP/SSE transport", "3000")
+  .option(
+    "--accept-list <repos...>",
+    "only include repositories matching these patterns (supports wildcards: * and ?)\n" +
+      "                                 Examples: vercel/next.js, facebook/*"
+  )
+  .option(
+    "--reject-list <repos...>",
+    "exclude repositories matching these patterns (supports wildcards: * and ?)\n" +
+      "                                 Examples: */deprecated/*, */legacy-*"
+  )
+  .allowUnknownOption() // let MCP Inspector / other wrappers pass through extra flags
+  .configureOutput({
+    writeErr: () => {}, // Suppress error output to avoid conflicts with MCP
+  });
+
+program.parse(modifiedArgv);
+cliOptions = program.opts<{
+  transport: string;
+  port: string;
+  acceptList?: string[];
+  rejectList?: string[];
 }>();
 
 // Validate transport option
@@ -46,7 +100,55 @@ const CLI_PORT = (() => {
 // Store SSE transports by session ID
 const sseTransports: Record<string, SSEServerTransport> = {};
 
-// Function to create a new server instance with all tools registered
+// Function to filter search results based on accept/reject lists
+function filterSearchResults(
+  results: SearchResult[],
+  acceptList?: string[],
+  rejectList?: string[]
+): SearchResult[] {
+  if (!acceptList && !rejectList) {
+    return results;
+  }
+
+  return results.filter((result) => {
+    const repoId = result.id || "";
+
+    // If accept list is provided, only include repos that match at least one pattern
+    if (acceptList && acceptList.length > 0) {
+      const isAccepted = acceptList.some((pattern) => {
+        // Convert pattern to regex, escaping special chars except * and ?
+        const regexPattern = pattern
+          .replace(/[.+^${}()|[\]\\]/g, "\\$&") // escape special chars
+          .replace(/\*/g, ".*") // convert * to .*
+          .replace(/\?/g, "."); // convert ? to .
+        const regex = new RegExp(regexPattern, "i");
+        return regex.test(repoId);
+      });
+      if (!isAccepted) {
+        return false;
+      }
+    }
+
+    // If reject list is provided, exclude repos that match any pattern
+    if (rejectList && rejectList.length > 0) {
+      const isRejected = rejectList.some((pattern) => {
+        // Convert pattern to regex, escaping special chars except * and ?
+        const regexPattern = pattern
+          .replace(/[.+^${}()|[\]\\]/g, "\\$&") // escape special chars
+          .replace(/\*/g, ".*") // convert * to .*
+          .replace(/\?/g, "."); // convert ? to .
+        const regex = new RegExp(regexPattern, "i");
+        return regex.test(repoId);
+      });
+      if (isRejected) {
+        return false;
+      }
+    }
+
+    return true;
+  });
+}
+
 function createServerInstance() {
   const server = new McpServer(
     {
@@ -102,7 +204,49 @@ For ambiguous queries, request clarification before proceeding with a best-guess
         };
       }
 
-      const resultsText = formatSearchResults(searchResponse);
+      // Filter results based on accept/reject lists
+      const filteredResults = filterSearchResults(
+        searchResponse.results,
+        cliOptions.acceptList,
+        cliOptions.rejectList
+      );
+
+      if (filteredResults.length === 0) {
+        const filterInfo = [];
+        if (cliOptions.acceptList) {
+          filterInfo.push(`Accept list: ${cliOptions.acceptList.join(", ")}`);
+        }
+        if (cliOptions.rejectList) {
+          filterInfo.push(`Reject list: ${cliOptions.rejectList.join(", ")}`);
+        }
+        const filterMessage =
+          filterInfo.length > 0 ? `\n\nApplied filters:\n${filterInfo.join("\n")}` : "";
+
+        return {
+          content: [
+            {
+              type: "text",
+              text: `No libraries found matching the search criteria after applying repository filters.${filterMessage}`,
+            },
+          ],
+        };
+      }
+
+      const filteredSearchResponse = { ...searchResponse, results: filteredResults };
+      const resultsText = formatSearchResults(filteredSearchResponse);
+
+      // Add filter information to the response
+      let filterInfo = "";
+      if (cliOptions.acceptList || cliOptions.rejectList) {
+        const filterDetails = [];
+        if (cliOptions.acceptList) {
+          filterDetails.push(`Accept list: ${cliOptions.acceptList.join(", ")}`);
+        }
+        if (cliOptions.rejectList) {
+          filterDetails.push(`Reject list: ${cliOptions.rejectList.join(", ")}`);
+        }
+        filterInfo = `\n\nApplied repository filters:\n${filterDetails.join("\n")}\nShowing ${filteredResults.length} of ${searchResponse.results.length} total results.\n\n----------\n\n`;
+      }
 
       return {
         content: [
@@ -118,7 +262,7 @@ Each result includes:
 - Trust Score: Authority indicator
 - Versions: List of versions if available. Use one of those versions if and only if the user explicitly provides a version in their query.
 
-For best results, select libraries based on name match, trust score, snippet coverage, and relevance to your use case.
+For best results, select libraries based on name match, trust score, snippet coverage, and relevance to your use case.${filterInfo}
 
 ----------
 
