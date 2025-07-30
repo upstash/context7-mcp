@@ -14,6 +14,60 @@ import { IncomingMessage } from "http";
 
 const DEFAULT_MINIMUM_TOKENS = 10000;
 
+// Global statistics tracking
+let totalCallCount = 0;
+let toolCallStats = {
+  'resolve-library-id': 0,
+  'get-library-docs': 0
+};
+let callHistory: Array<{
+  timestamp: string;
+  tool: string;
+  query?: string;
+  libraryId?: string;
+  clientIp?: string;
+  success: boolean;
+}> = [];
+
+// Function to log tool call statistics
+function logToolCall(tool: string, query?: string, libraryId?: string, clientIp?: string, success: boolean = true) {
+  totalCallCount++;
+  toolCallStats[tool as keyof typeof toolCallStats]++;
+  
+  const logEntry = {
+    timestamp: new Date().toISOString(),
+    tool,
+    query,
+    libraryId,
+    clientIp: clientIp ? clientIp.substring(0, 8) + '...' : undefined, // Mask IP for privacy
+    success
+  };
+  
+  callHistory.push(logEntry);
+  
+  // Keep only last 100 entries to prevent memory issues
+  if (callHistory.length > 100) {
+    callHistory = callHistory.slice(-100);
+  }
+  
+  // ANSI color codes
+  const colors = {
+    reset: '\x1b[0m',
+    green: '\x1b[32m',
+    red: '\x1b[31m',
+    blue: '\x1b[34m',
+    yellow: '\x1b[33m'
+  };
+  
+  // Log statistics to console with colors
+  console.error(`${colors.blue}[STATS]${colors.reset} Total calls: ${colors.yellow}${totalCallCount}${colors.reset} | resolve-library-id: ${colors.yellow}${toolCallStats['resolve-library-id']}${colors.reset} | get-library-docs: ${colors.yellow}${toolCallStats['get-library-docs']}${colors.reset}`);
+  
+  const statusColor = success ? colors.green : colors.red;
+  const statusText = success ? 'SUCCESS' : 'FAILED';
+  console.error(`${colors.blue}[CALL]${colors.reset} ${tool} - ${statusColor}${statusText}${colors.reset} - ${new Date().toLocaleString()}`);
+}
+
+
 // Parse CLI arguments using commander
 const program = new Command()
   .option("--transport <stdio|http|sse>", "transport type", "stdio")
@@ -101,9 +155,14 @@ For ambiguous queries, request clarification before proceeding with a best-guess
         .describe("Library name to search for and retrieve a Context7-compatible library ID."),
     },
     async ({ libraryName }) => {
+      // Log the tool call
+      logToolCall('resolve-library-id', libraryName, undefined, clientIp);
+      
       const searchResponse: SearchResponse = await searchLibraries(libraryName, clientIp);
 
       if (!searchResponse.results || searchResponse.results.length === 0) {
+        // Log failed call
+        logToolCall('resolve-library-id', libraryName, undefined, clientIp, false);
         return {
           content: [
             {
@@ -165,6 +224,9 @@ ${resultsText}`,
         ),
     },
     async ({ context7CompatibleLibraryID, tokens = DEFAULT_MINIMUM_TOKENS, topic = "" }) => {
+      // Log the tool call
+      logToolCall('get-library-docs', topic || 'general', context7CompatibleLibraryID, clientIp);
+      
       const fetchDocsResponse = await fetchLibraryDocumentation(
         context7CompatibleLibraryID,
         {
@@ -175,6 +237,8 @@ ${resultsText}`,
       );
 
       if (!fetchDocsResponse) {
+        // Log failed call
+        logToolCall('get-library-docs', topic || 'general', context7CompatibleLibraryID, clientIp, false);
         return {
           content: [
             {
@@ -195,6 +259,8 @@ ${resultsText}`,
       };
     }
   );
+
+
 
   return server;
 }
