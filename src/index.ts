@@ -48,16 +48,34 @@ const CLI_PORT = (() => {
 const sseTransports: Record<string, SSEServerTransport> = {};
 
 function getClientIp(req: IncomingMessage): string | undefined {
-  // Check for X-Forwarded-For header (set by AWS ELB and other load balancers)
-  const forwardedFor = req.headers["x-forwarded-for"];
+  // Check both possible header casings
+  const forwardedFor = req.headers["x-forwarded-for"] || req.headers["X-Forwarded-For"];
+
   if (forwardedFor) {
-    // X-Forwarded-For can contain multiple IPs, take the first one
+    // X-Forwarded-For can contain multiple IPs
     const ips = Array.isArray(forwardedFor) ? forwardedFor[0] : forwardedFor;
-    return ips.split(",")[0].trim();
+    const ipList = ips.split(",").map((ip) => ip.trim());
+
+    // Find the first public IP address
+    for (const ip of ipList) {
+      const plainIp = ip.replace(/^::ffff:/, "");
+      if (
+        !plainIp.startsWith("10.") &&
+        !plainIp.startsWith("192.168.") &&
+        !/^172\.(1[6-9]|2[0-9]|3[0-1])\./.test(plainIp)
+      ) {
+        return plainIp;
+      }
+    }
+    // If all are private, use the first one
+    return ipList[0].replace(/^::ffff:/, "");
   }
 
-  // Fall back to socket remote address
-  return req.socket?.remoteAddress || undefined;
+  // Fallback: use remote address, strip IPv6-mapped IPv4
+  if (req.socket?.remoteAddress) {
+    return req.socket.remoteAddress.replace(/^::ffff:/, "");
+  }
+  return undefined;
 }
 
 // Function to create a new server instance with all tools registered
