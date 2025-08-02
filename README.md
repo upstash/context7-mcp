@@ -378,6 +378,56 @@ Add this to your Claude Desktop `claude_desktop_config.json` file. See [Claude D
 </details>
 
 <details>
+<summary><b>Install in Crush</b></summary>
+
+Add this to your Crush configuration file. See [Crush MCP docs](https://github.com/charmbracelet/crush#mcps) for more info.
+
+#### Crush Remote Server Connection (HTTP)
+
+```json
+{
+  "$schema": "https://charm.land/crush.json",
+  "mcp": {
+    "context7": {
+      "type": "http",
+      "url": "https://mcp.context7.com/mcp"
+    }
+  }
+}
+```
+
+#### Crush Remote Server Connection (SSE)
+
+```json
+{
+  "$schema": "https://charm.land/crush.json",
+  "mcp": {
+    "context7": {
+      "type": "sse",
+      "url": "https://mcp.context7.com/sse"
+    }
+  }
+}
+```
+
+#### Crush Local Server Connection
+
+```json
+{
+  "$schema": "https://charm.land/crush.json",
+  "mcp": {
+    "context7": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@upstash/context7-mcp"]
+    }
+  }
+}
+```
+
+</details>
+
+<details>
 <summary>
 <b>Install in Cline</b>
 </summary>
