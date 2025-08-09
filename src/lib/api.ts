@@ -1,8 +1,33 @@
 import { SearchResponse } from "./types.js";
 import { generateHeaders } from "./encryption.js";
+import { ProxyAgent, setGlobalDispatcher } from "undici";
 
 const CONTEXT7_API_BASE_URL = "https://context7.com/api";
 const DEFAULT_TYPE = "txt";
+
+// Pick up proxy configuration in a variety of common env var names.
+let PROXY_URL: string | null =
+  process.env.HTTPS_PROXY ??
+  process.env.https_proxy ??
+  process.env.HTTP_PROXY ??
+  process.env.http_proxy ??
+  null;
+
+if (PROXY_URL && !PROXY_URL.startsWith("$") && /^(http|https):\/\//i.test(PROXY_URL)) {
+  try {
+    // Configure a global proxy agent once at startup. Subsequent fetch calls will
+    // automatically use this dispatcher.
+    // Using `any` cast because ProxyAgent implements the Dispatcher interface but
+    // TS may not infer it correctly in some versions.
+    setGlobalDispatcher(new ProxyAgent(PROXY_URL) as any);
+  } catch (error) {
+    // Don't crash the app if proxy initialisation fails – just log a warning.
+    console.error(
+      `[Context7] Failed to configure proxy agent for provided proxy URL: ${PROXY_URL}:`,
+      error
+    );
+  }
+}
 
 /**
  * Searches for libraries matching the given query
