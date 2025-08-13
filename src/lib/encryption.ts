@@ -30,11 +30,15 @@ function encryptClientIp(clientIp: string): string {
 
 export function generateHeaders(
   clientIp?: string,
+  apiKey?: string,
   extraHeaders: Record<string, string> = {}
 ): Record<string, string> {
   const headers: Record<string, string> = { ...extraHeaders };
   if (clientIp) {
     headers["mcp-client-ip"] = encryptClientIp(clientIp);
+  }
+  if (apiKey) {
+    headers["Authorization"] = `Bearer ${apiKey}`;
   }
   return headers;
 }
