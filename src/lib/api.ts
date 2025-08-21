@@ -4,6 +4,7 @@ import { ProxyAgent, setGlobalDispatcher } from "undici";
 
 const CONTEXT7_API_BASE_URL = "https://context7.com/api";
 const DEFAULT_TYPE = "txt";
+const REQUEST_TIMEOUT = 30000; // 30 seconds
 
 // Pick up proxy configuration in a variety of common env var names.
 const PROXY_URL: string | null =
@@ -30,6 +31,29 @@ if (PROXY_URL && !PROXY_URL.startsWith("$") && /^(http|https):\/\//i.test(PROXY_
 }
 
 /**
+ * Creates a fetch request with timeout
+ */
+async function fetchWithTimeout(url: string | URL, options: RequestInit = {}): Promise<Response> {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT);
+
+  try {
+    const response = await fetch(url, {
+      ...options,
+      signal: controller.signal,
+    });
+    clearTimeout(timeoutId);
+    return response;
+  } catch (error) {
+    clearTimeout(timeoutId);
+    if (error instanceof Error && error.name === 'AbortError') {
+      throw new Error(`Request timeout after ${REQUEST_TIMEOUT}ms`);
+    }
+    throw error;
+  }
+}
+
+/**
  * Searches for libraries matching the given query
  * @param query The search query
  * @param clientIp Optional client IP address to include in headers
@@ -47,33 +71,48 @@ export async function searchLibraries(
 
     const headers = generateHeaders(clientIp, apiKey);
 
-    const response = await fetch(url, { headers });
+    const response = await fetchWithTimeout(url, { headers });
     if (!response.ok) {
       const errorCode = response.status;
-      if (errorCode === 429) {
-        console.error("Rate limited due to too many requests. Please try again later.");
-        return {
-          results: [],
-          error: "Rate limited due to too many requests. Please try again later.",
-        } as SearchResponse;
+      let errorMessage: string;
+      
+      switch (errorCode) {
+        case 429:
+          errorMessage = "Rate limited due to too many requests. Please try again later.";
+          break;
+        case 401:
+          errorMessage = "Unauthorized. Please check your API key.";
+          break;
+        case 403:
+          errorMessage = "Access forbidden. Please check your API key permissions.";
+          break;
+        case 500:
+          errorMessage = "Context7 server error. Please try again later.";
+          break;
+        case 502:
+        case 503:
+        case 504:
+          errorMessage = "Context7 service temporarily unavailable. Please try again later.";
+          break;
+        default:
+          errorMessage = `Failed to search libraries. Error code: ${errorCode}`;
       }
-      if (errorCode === 401) {
-        console.error("Unauthorized. Please check your API key.");
-        return {
-          results: [],
-          error: "Unauthorized. Please check your API key.",
-        } as SearchResponse;
-      }
-      console.error(`Failed to search libraries. Please try again later. Error code: ${errorCode}`);
+      
+      console.error(errorMessage);
       return {
         results: [],
-        error: `Failed to search libraries. Please try again later. Error code: ${errorCode}`,
+        error: errorMessage,
       } as SearchResponse;
     }
-    return await response.json();
+    
+    const data = await response.json();
+    return data;
   } catch (error) {
-    console.error("Error searching libraries:", error);
-    return { results: [], error: `Error searching libraries: ${error}` } as SearchResponse;
+    const errorMessage = error instanceof Error 
+      ? `Error searching libraries: ${error.message}` 
+      : `Error searching libraries: ${String(error)}`;
+    console.error(errorMessage);
+    return { results: [], error: errorMessage } as SearchResponse;
   }
 }
 
@@ -105,36 +144,52 @@ export async function fetchLibraryDocumentation(
 
     const headers = generateHeaders(clientIp, apiKey, { "X-Context7-Source": "mcp-server" });
 
-    const response = await fetch(url, { headers });
+    const response = await fetchWithTimeout(url, { headers });
     if (!response.ok) {
       const errorCode = response.status;
-      if (errorCode === 429) {
-        const errorMessage = "Rate limited due to too many requests. Please try again later.";
-        console.error(errorMessage);
-        return errorMessage;
+      let errorMessage: string;
+      
+      switch (errorCode) {
+        case 429:
+          errorMessage = "Rate limited due to too many requests. Please try again later.";
+          break;
+        case 404:
+          errorMessage = "The library you are trying to access does not exist. Please try with a different library ID.";
+          break;
+        case 401:
+          errorMessage = "Unauthorized. Please check your API key.";
+          break;
+        case 403:
+          errorMessage = "Access forbidden. Please check your API key permissions.";
+          break;
+        case 413:
+          errorMessage = "Library is too large to process. Try requesting fewer tokens or a specific topic.";
+          break;
+        case 500:
+          errorMessage = "Context7 server error. Please try again later.";
+          break;
+        case 502:
+        case 503:
+        case 504:
+          errorMessage = "Context7 service temporarily unavailable. Please try again later.";
+          break;
+        default:
+          errorMessage = `Failed to fetch documentation. Error code: ${errorCode}`;
       }
-      if (errorCode === 404) {
-        const errorMessage =
-          "The library you are trying to access does not exist. Please try with a different library ID.";
-        console.error(errorMessage);
-        return errorMessage;
-      }
-      if (errorCode === 401) {
-        const errorMessage = "Unauthorized. Please check your API key.";
-        console.error(errorMessage);
-        return errorMessage;
-      }
-      const errorMessage = `Failed to fetch documentation. Please try again later. Error code: ${errorCode}`;
+      
       console.error(errorMessage);
       return errorMessage;
     }
+    
     const text = await response.text();
     if (!text || text === "No content available" || text === "No context data available") {
       return null;
     }
     return text;
   } catch (error) {
-    const errorMessage = `Error fetching library documentation. Please try again later. ${error}`;
+    const errorMessage = error instanceof Error 
+      ? `Error fetching library documentation: ${error.message}` 
+      : `Error fetching library documentation: ${String(error)}`;
     console.error(errorMessage);
     return errorMessage;
   }
