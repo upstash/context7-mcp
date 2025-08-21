@@ -16,29 +16,47 @@ const DEFAULT_MINIMUM_TOKENS = 10000;
 
 // Parse CLI arguments using commander
 const program = new Command()
-  .option("--transport <stdio|http|sse>", "transport type", "stdio")
-  .option("--port <number>", "port for HTTP/SSE transport", "3000")
+  .option("--transport <stdio|http>", "transport type", "stdio")
+  .option("--port <number>", "port for HTTP transport", "3000")
+  .option("--api-key <key>", "API key for authentication")
   .allowUnknownOption() // let MCP Inspector / other wrappers pass through extra flags
   .parse(process.argv);
 
 const cliOptions = program.opts<{
   transport: string;
   port: string;
+  apiKey?: string;
 }>();
 
 // Validate transport option
-const allowedTransports = ["stdio", "http", "sse"];
+const allowedTransports = ["stdio", "http"];
 if (!allowedTransports.includes(cliOptions.transport)) {
   console.error(
-    `Invalid --transport value: '${cliOptions.transport}'. Must be one of: stdio, http, sse.`
+    `Invalid --transport value: '${cliOptions.transport}'. Must be one of: stdio, http.`
   );
   process.exit(1);
 }
 
 // Transport configuration
-const TRANSPORT_TYPE = (cliOptions.transport || "stdio") as "stdio" | "http" | "sse";
+const TRANSPORT_TYPE = (cliOptions.transport || "stdio") as "stdio" | "http";
 
-// HTTP/SSE port configuration
+// Disallow incompatible flags based on transport
+const passedPortFlag = process.argv.includes("--port");
+const passedApiKeyFlag = process.argv.includes("--api-key");
+
+if (TRANSPORT_TYPE === "http" && passedApiKeyFlag) {
+  console.error(
+    "The --api-key flag is not allowed when using --transport http. Use header-based auth at the HTTP layer instead."
+  );
+  process.exit(1);
+}
+
+if (TRANSPORT_TYPE === "stdio" && passedPortFlag) {
+  console.error("The --port flag is not allowed when using --transport stdio.");
+  process.exit(1);
+}
+
+// HTTP port configuration
 const CLI_PORT = (() => {
   const parsed = parseInt(cliOptions.port, 10);
   return isNaN(parsed) ? undefined : parsed;
@@ -79,7 +97,7 @@ function getClientIp(req: IncomingMessage): string | undefined {
 }
 
 // Function to create a new server instance with all tools registered
-function createServerInstance(clientIp?: string) {
+function createServerInstance(clientIp?: string, apiKey?: string) {
   const server = new McpServer(
     {
       name: "Context7",
@@ -92,9 +110,11 @@ function createServerInstance(clientIp?: string) {
   );
 
   // Register Context7 tools
-  server.tool(
+  server.registerTool(
     "resolve-library-id",
-    `Resolves a package/product name to a Context7-compatible library ID and returns a list of matching libraries.
+    {
+      title: "Resolve Context7 Library ID",
+      description: `Resolves a package/product name to a Context7-compatible library ID and returns a list of matching libraries.
 
 You MUST call this function before 'get-library-docs' to obtain a valid Context7-compatible library ID UNLESS the user explicitly provides a library ID in the format '/org/project' or '/org/project/version' in their query.
 
@@ -113,13 +133,14 @@ Response Format:
 - If no good matches exist, clearly state this and suggest query refinements
 
 For ambiguous queries, request clarification before proceeding with a best-guess match.`,
-    {
-      libraryName: z
-        .string()
-        .describe("Library name to search for and retrieve a Context7-compatible library ID."),
+      inputSchema: {
+        libraryName: z
+          .string()
+          .describe("Library name to search for and retrieve a Context7-compatible library ID."),
+      },
     },
     async ({ libraryName }) => {
-      const searchResponse: SearchResponse = await searchLibraries(libraryName, clientIp);
+      const searchResponse: SearchResponse = await searchLibraries(libraryName, clientIp, apiKey);
 
       if (!searchResponse.results || searchResponse.results.length === 0) {
         return {
@@ -161,26 +182,30 @@ ${resultsText}`,
     }
   );
 
-  server.tool(
+  server.registerTool(
     "get-library-docs",
-    "Fetches up-to-date documentation for a library. You must call 'resolve-library-id' first to obtain the exact Context7-compatible library ID required to use this tool, UNLESS the user explicitly provides a library ID in the format '/org/project' or '/org/project/version' in their query.",
     {
-      context7CompatibleLibraryID: z
-        .string()
-        .describe(
-          "Exact Context7-compatible library ID (e.g., '/mongodb/docs', '/vercel/next.js', '/supabase/supabase', '/vercel/next.js/v14.3.0-canary.87') retrieved from 'resolve-library-id' or directly from user query in the format '/org/project' or '/org/project/version'."
-        ),
-      topic: z
-        .string()
-        .optional()
-        .describe("Topic to focus documentation on (e.g., 'hooks', 'routing')."),
-      tokens: z
-        .preprocess((val) => (typeof val === "string" ? Number(val) : val), z.number())
-        .transform((val) => (val < DEFAULT_MINIMUM_TOKENS ? DEFAULT_MINIMUM_TOKENS : val))
-        .optional()
-        .describe(
-          `Maximum number of tokens of documentation to retrieve (default: ${DEFAULT_MINIMUM_TOKENS}). Higher values provide more context but consume more tokens.`
-        ),
+      title: "Get Library Docs",
+      description:
+        "Fetches up-to-date documentation for a library. You must call 'resolve-library-id' first to obtain the exact Context7-compatible library ID required to use this tool, UNLESS the user explicitly provides a library ID in the format '/org/project' or '/org/project/version' in their query.",
+      inputSchema: {
+        context7CompatibleLibraryID: z
+          .string()
+          .describe(
+            "Exact Context7-compatible library ID (e.g., '/mongodb/docs', '/vercel/next.js', '/supabase/supabase', '/vercel/next.js/v14.3.0-canary.87') retrieved from 'resolve-library-id' or directly from user query in the format '/org/project' or '/org/project/version'."
+          ),
+        topic: z
+          .string()
+          .optional()
+          .describe("Topic to focus documentation on (e.g., 'hooks', 'routing')."),
+        tokens: z
+          .preprocess((val) => (typeof val === "string" ? Number(val) : val), z.number())
+          .transform((val) => (val < DEFAULT_MINIMUM_TOKENS ? DEFAULT_MINIMUM_TOKENS : val))
+          .optional()
+          .describe(
+            `Maximum number of tokens of documentation to retrieve (default: ${DEFAULT_MINIMUM_TOKENS}). Higher values provide more context but consume more tokens.`
+          ),
+      },
     },
     async ({ context7CompatibleLibraryID, tokens = DEFAULT_MINIMUM_TOKENS, topic = "" }) => {
       const fetchDocsResponse = await fetchLibraryDocumentation(
@@ -189,7 +214,8 @@ ${resultsText}`,
           tokens,
           topic,
         },
-        clientIp
+        clientIp,
+        apiKey
       );
 
       if (!fetchDocsResponse) {
@@ -220,7 +246,7 @@ ${resultsText}`,
 async function main() {
   const transportType = TRANSPORT_TYPE;
 
-  if (transportType === "http" || transportType === "sse") {
+  if (transportType === "http") {
     // Get initial port from environment or use default
     const initialPort = CLI_PORT ?? 3000;
     // Keep track of which port we end up using
@@ -233,7 +259,7 @@ async function main() {
       res.setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS,DELETE");
       res.setHeader(
         "Access-Control-Allow-Headers",
-        "Content-Type, MCP-Session-Id, mcp-session-id, MCP-Protocol-Version"
+        "Content-Type, MCP-Session-Id, MCP-Protocol-Version, X-Context7-API-Key, Context7-API-Key, X-API-Key, Authorization"
       );
       res.setHeader("Access-Control-Expose-Headers", "MCP-Session-Id");
 
@@ -244,12 +270,46 @@ async function main() {
         return;
       }
 
+      // Function to extract header value safely, handling both string and string[] cases
+      const extractHeaderValue = (value: string | string[] | undefined): string | undefined => {
+        if (!value) return undefined;
+        return typeof value === "string" ? value : value[0];
+      };
+
+      // Extract Authorization header and remove Bearer prefix if present
+      const extractBearerToken = (
+        authHeader: string | string[] | undefined
+      ): string | undefined => {
+        const header = extractHeaderValue(authHeader);
+        if (!header) return undefined;
+
+        // If it starts with 'Bearer ', remove that prefix
+        if (header.startsWith("Bearer ")) {
+          return header.substring(7).trim();
+        }
+
+        // Otherwise return the raw value
+        return header;
+      };
+
+      // Check headers in order of preference
+      const apiKey =
+        extractBearerToken(req.headers.authorization) ||
+        extractHeaderValue(req.headers["Context7-API-Key"]) ||
+        extractHeaderValue(req.headers["X-API-Key"]) ||
+        extractHeaderValue(req.headers["context7-api-key"]) ||
+        extractHeaderValue(req.headers["x-api-key"]) ||
+        extractHeaderValue(req.headers["Context7_API_Key"]) ||
+        extractHeaderValue(req.headers["X_API_Key"]) ||
+        extractHeaderValue(req.headers["context7_api_key"]) ||
+        extractHeaderValue(req.headers["x_api_key"]);
+
       try {
         // Extract client IP address using socket remote address (most reliable)
         const clientIp = getClientIp(req);
 
         // Create new server instance for each request
-        const requestServer = createServerInstance(clientIp);
+        const requestServer = createServerInstance(clientIp, apiKey);
 
         if (url === "/mcp") {
           const transport = new StreamableHTTPServerTransport({
@@ -320,7 +380,7 @@ async function main() {
       httpServer.listen(port, () => {
         actualPort = port;
         console.error(
-          `Context7 Documentation MCP Server running on ${transportType.toUpperCase()} at http://localhost:${actualPort}/mcp and legacy SSE at /sse`
+          `Context7 Documentation MCP Server running on ${transportType.toUpperCase()} at http://localhost:${actualPort}/mcp with SSE endpoint at /sse`
         );
       });
     };
@@ -329,7 +389,7 @@ async function main() {
     startServer(initialPort);
   } else {
     // Stdio transport - this is already stateless by nature
-    const server = createServerInstance();
+    const server = createServerInstance(undefined, cliOptions.apiKey);
     const transport = new StdioServerTransport();
     await server.connect(transport);
     console.error("Context7 Documentation MCP Server running on stdio");
