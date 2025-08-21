@@ -101,7 +101,7 @@ function createServerInstance(clientIp?: string, apiKey?: string) {
   const server = new McpServer(
     {
       name: "Context7",
-      version: "1.0.13",
+      version: "1.0.14",
     },
     {
       instructions:
@@ -140,28 +140,29 @@ For ambiguous queries, request clarification before proceeding with a best-guess
       },
     },
     async ({ libraryName }) => {
-      const searchResponse: SearchResponse = await searchLibraries(libraryName, clientIp, apiKey);
+      try {
+        const searchResponse: SearchResponse = await searchLibraries(libraryName, clientIp, apiKey);
 
-      if (!searchResponse.results || searchResponse.results.length === 0) {
+        if (!searchResponse.results || searchResponse.results.length === 0) {
+          return {
+            content: [
+              {
+                type: "text",
+                text: searchResponse.error
+                  ? searchResponse.error
+                  : "Failed to retrieve library documentation data from Context7",
+              },
+            ],
+          };
+        }
+
+        const resultsText = formatSearchResults(searchResponse);
+
         return {
           content: [
             {
               type: "text",
-              text: searchResponse.error
-                ? searchResponse.error
-                : "Failed to retrieve library documentation data from Context7",
-            },
-          ],
-        };
-      }
-
-      const resultsText = formatSearchResults(searchResponse);
-
-      return {
-        content: [
-          {
-            type: "text",
-            text: `Available Libraries (top matches):
+              text: `Available Libraries (top matches):
 
 Each result includes:
 - Library ID: Context7-compatible identifier (format: /org/project)
@@ -176,9 +177,19 @@ For best results, select libraries based on name match, trust score, snippet cov
 ----------
 
 ${resultsText}`,
-          },
-        ],
-      };
+            },
+          ],
+        };
+      } catch (error) {
+        return {
+          content: [
+            {
+              type: "text",
+              text: `Error searching for library: ${error instanceof Error ? error.message : String(error)}`,
+            },
+          ],
+        };
+      }
     }
   );
 
@@ -208,35 +219,46 @@ ${resultsText}`,
       },
     },
     async ({ context7CompatibleLibraryID, tokens = DEFAULT_MINIMUM_TOKENS, topic = "" }) => {
-      const fetchDocsResponse = await fetchLibraryDocumentation(
-        context7CompatibleLibraryID,
-        {
-          tokens,
-          topic,
-        },
-        clientIp,
-        apiKey
-      );
+      try {
+        const fetchDocsResponse = await fetchLibraryDocumentation(
+          context7CompatibleLibraryID,
+          {
+            tokens,
+            topic,
+          },
+          clientIp,
+          apiKey
+        );
 
-      if (!fetchDocsResponse) {
+        if (!fetchDocsResponse) {
+          return {
+            content: [
+              {
+                type: "text",
+                text: "Documentation not found or not finalized for this library. This might have happened because you used an invalid Context7-compatible library ID. To get a valid Context7-compatible library ID, use the 'resolve-library-id' with the package name you wish to retrieve documentation for.",
+              },
+            ],
+          };
+        }
+
         return {
           content: [
             {
               type: "text",
-              text: "Documentation not found or not finalized for this library. This might have happened because you used an invalid Context7-compatible library ID. To get a valid Context7-compatible library ID, use the 'resolve-library-id' with the package name you wish to retrieve documentation for.",
+              text: fetchDocsResponse,
+            },
+          ],
+        };
+      } catch (error) {
+        return {
+          content: [
+            {
+              type: "text",
+              text: `Error fetching documentation: ${error instanceof Error ? error.message : String(error)}`,
             },
           ],
         };
       }
-
-      return {
-        content: [
-          {
-            type: "text",
-            text: fetchDocsResponse,
-          },
-        ],
-      };
     }
   );
 
@@ -245,6 +267,17 @@ ${resultsText}`,
 
 async function main() {
   const transportType = TRANSPORT_TYPE;
+
+  // Add process error handlers for better Windows compatibility
+  process.on('uncaughtException', (error) => {
+    console.error('Uncaught Exception:', error);
+    process.exit(1);
+  });
+
+  process.on('unhandledRejection', (reason, promise) => {
+    console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+    process.exit(1);
+  });
 
   if (transportType === "http") {
     // Get initial port from environment or use default
@@ -388,11 +421,25 @@ async function main() {
     // Start the server with initial port
     startServer(initialPort);
   } else {
-    // Stdio transport - this is already stateless by nature
-    const server = createServerInstance(undefined, cliOptions.apiKey);
-    const transport = new StdioServerTransport();
-    await server.connect(transport);
-    console.error("Context7 Documentation MCP Server running on stdio");
+    try {
+      // Stdio transport - this is already stateless by nature
+      const server = createServerInstance(undefined, cliOptions.apiKey);
+      const transport = new StdioServerTransport();
+      
+      // Add timeout handling for Windows
+      const connectTimeout = setTimeout(() => {
+        console.error("Connection timeout - MCP server failed to initialize within 30 seconds");
+        process.exit(1);
+      }, 30000);
+
+      await server.connect(transport);
+      clearTimeout(connectTimeout);
+      
+      console.error("Context7 Documentation MCP Server running on stdio");
+    } catch (error) {
+      console.error("Failed to start stdio transport:", error);
+      process.exit(1);
+    }
   }
 }
 
