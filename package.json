@@ -1,6 +1,6 @@
 {
   "name": "@upstash/context7-mcp",
-  "version": "1.0.0",
+  "version": "1.0.14",
   "description": "MCP server for Context7",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -35,19 +35,20 @@
   "homepage": "https://github.com/upstash/context7#readme",
   "dependencies": {
     "undici": "^6.6.3",
-    "@modelcontextprotocol/sdk": "^1.13.2",
+    "@modelcontextprotocol/sdk": "^1.17.1",
     "commander": "^14.0.0",
     "zod": "^3.24.2"
   },
   "devDependencies": {
     "@types/node": "^22.13.14",
-    "@typescript-eslint/eslint-plugin": "^8.28.0",
-    "@typescript-eslint/parser": "^8.28.0",
-    "eslint": "^9.23.0",
+    "@types/babel__generator": "^7.6.8",
+    "@typescript-eslint/eslint-plugin": "^8.38.0",
+    "@typescript-eslint/parser": "^8.38.0",
+    "eslint": "^9.32.0",
     "eslint-config-prettier": "^10.1.1",
     "eslint-plugin-prettier": "^5.2.5",
     "prettier": "^3.5.3",
     "typescript": "^5.8.2",
-    "typescript-eslint": "^8.28.0"
+    "typescript-eslint": "^8.38.0"
   }
 }
