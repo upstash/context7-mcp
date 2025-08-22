@@ -6,10 +6,15 @@ sources:
     url: https://nextjs.org/docs
 
   - type: web
-    url: https://firebase.google.com/docs
+    url: https://supabase.com/docs
 
   - type: web
     url: https://tailwindcss.com/docs
 
   - type: github
     url: https://github.com/n8n-io/n8n
+
+  - type: web
+    url: https://www.postgresql.org/docs/
+
+    
