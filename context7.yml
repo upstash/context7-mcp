@@ -1,0 +1,24 @@
+# Arquivo de configuração para o nosso servidor Context7
+# Ele define quais documentações o nosso agente deve aprender.
+
+sources:
+  - type: web
+    url: https://nextjs.org/docs
+
+  - type: web
+    url: https://supabase.com/docs
+
+  - type: web
+    url: https://tailwindcss.com/docs
+
+  - type: github
+    url: https://github.com/n8n-io/n8n
+
+  - type: web
+    url: https://www.postgresql.org/docs/
+
+  - type: web
+    url: https://cloud.google.com/vertex-ai/docs
+  
+  - type: web
+    url: https://ai.google.dev/docs
