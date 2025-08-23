@@ -17,4 +17,8 @@ sources:
   - type: web
     url: https://www.postgresql.org/docs/
 
-    
+  - type: web
+    url: https://cloud.google.com/vertex-ai/docs
+  
+  - type: web
+    url: https://ai.google.dev/docs
